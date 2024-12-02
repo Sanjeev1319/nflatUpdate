@@ -37,7 +37,7 @@ export default function StudentList({
 				</h2>
 			}
 		>
-			<Head title="Dashboard" />
+			<Head title="Student List" />
 
 			{success && (
 				<div className="pt-12">

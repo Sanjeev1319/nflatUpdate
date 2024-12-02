@@ -1,52 +1,64 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import SchoolLoginLayout from "@/Components/SchoolLoginLayout";
 import { Head, Link } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 
-export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
-	const handleImageError = () => {
-		document.getElementById("screenshot-container")?.classList.add("!hidden");
-		document.getElementById("docs-card")?.classList.add("!row-span-1");
-		document.getElementById("docs-card-content")?.classList.add("!flex-row");
-		document.getElementById("background")?.classList.add("!hidden");
+export default function Welcome({ auth, success }) {
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	// Function to open the modal when success is passed
+	const openModal = () => {
+		if (success) {
+			setIsModalOpen(true);
+		}
 	};
+
+	// Function to close the modal
+	const closeModal = () => {
+		setIsModalOpen(false);
+	};
+
+	// Open the modal when component mounts
+	useEffect(() => {
+		openModal();
+	}, [success]);
 
 	return (
 		<>
 			<Head title="Welcome" />
-			{success && (
-				<div className="bg-indigo-900 text-center py-4 lg:px-4">
+			{/* Modal Background */}
+			{isModalOpen && (
+				<div
+					className="modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50"
+					onClick={closeModal}
+				>
 					<div
-						className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
-						role="alert"
+						className="modal-content bg-white p-6 rounded-lg w-3/4 max-w-md relative"
+						onClick={(e) => e.stopPropagation()} // Prevents modal from closing when clicking inside content
 					>
-						<span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth={1.5}
-								stroke="currentColor"
-								className="size-5"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z"
-								/>
-							</svg>
-						</span>
-						<span className="font-semibold mr-2 text-left flex-auto">
-							School Registered Successfully. The login details are shared on{" "}
-							{success}.
+						<span
+							className="close absolute top-2 right-2 text-2xl cursor-pointer"
+							onClick={closeModal}
+						>
+							&times;
 						</span>
 
-						<svg
-							className="fill-current opacity-75 h-4 w-4"
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 20 20"
-						>
-							<path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z" />
-						</svg>
+						{/* Modal Content */}
+						<h2 className="text-xl font-semibold">Success</h2>
+						<p className="mt-4 text-center">
+							School Registered Successfully. The login details are shared on{" "}
+							<strong>{success}</strong>.
+						</p>
+
+						{/* Close Button */}
+						<div className="mt-6 text-center">
+							<button
+								onClick={closeModal}
+								className="bg-indigo-600 text-white py-2 px-4 rounded-full hover:bg-indigo-700"
+							>
+								Close
+							</button>
+						</div>
 					</div>
 				</div>
 			)}
@@ -60,11 +72,11 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 					<div className="min-h-10 bg-blue-900 w-full text-white flex items-center justify-center text-lg font-medium">
 						Registration Started
 					</div>
-					<div className="grid grid-cols-1 lg:grid-cols-3 overflow-hidden">
-						<div className="lg:col-span-2">
+					<div className="grid grid-cols-1 lg:grid-cols-3 overflow-hidden items-stretch">
+						<div className="lg:col-span-2 h-full">
 							<img src={"/storage/ncfe_logos/nflat-banner.png"} />
 						</div>
-						<div className="col-span-1">
+						<div className="col-span-1 bg-white flex flex-col justify-between h-full">
 							<div className="px-10">
 								<h2 className="text-center my-5 leading-10 text-2xl font-medium text-black">
 									Registered School Login
@@ -86,7 +98,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 									// href={route("school.register")}
 									className="inline-flex items-center py-4 border border-transparent bg-orange-600 px-2 justify-center text-sm font-bold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-orange-500 focus:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 active:bg-orange-700"
 								>
-									Take a Test
+									Click Here to Take Test
 								</Link>
 							</div>
 						</div>
@@ -95,8 +107,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 						<main className="mt-10">
 							<div className="grid gap-6 lg:grid-cols-4 lg:gap-8">
 								<div>
-									<div class="flex flex-col items-start overflow-hidden rounded-lg ring-1 transition duration-300 text-black/70 ring-black/20 dark:bg-zinc-900 dark:ring-zinc-800 dark:text-white/70 dark:hover:ring-zinc-700 self-start">
-										<div class="w-full sm:px-6 py-3 px-4 bg-slate-50 border-gray-200 border-b">
+									<div className="flex flex-col items-start overflow-hidden rounded-lg ring-1 transition duration-300 text-black/70 ring-black/20 dark:bg-zinc-900 dark:ring-zinc-800 dark:text-white/70 dark:hover:ring-zinc-700 self-start">
+										<div className="w-full sm:px-6 py-3 px-4 bg-slate-50 border-gray-200 border-b">
 											<h2 className="text-base font-semibold text-black text-center">
 												Downloads
 											</h2>
@@ -233,26 +245,26 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 											improve the overall financial literacy of the nation.
 										</p>
 									</div>
-									<div class="my-8">
-										<div class="text-center">
-											<h5 class="text-xl text-blue-800 font-semibold">
+									<div className="my-8">
+										<div className="text-center">
+											<h5 className="text-xl text-blue-800 font-semibold">
 												Test Categories
 											</h5>
-											<p class="mt-2">
+											<p className="mt-2">
 												The test is open for school students of Class VI to XII
 												in 3 separate categories:
 											</p>
 										</div>
 									</div>
 
-									<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-center">
-										<div class="flex flex-col h-full">
-											<div class="bg-white shadow rounded-lg border border-blue-900 flex flex-col h-full">
-												<div class="bg-blue-900 text-white text-center py-3 rounded-t-lg">
-													<h6 class="text-lg font-normal">NFLAT Junior</h6>
+									<div className="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-center">
+										<div className="flex flex-col h-full">
+											<div className="bg-white shadow rounded-lg border border-blue-900 flex flex-col h-full">
+												<div className="bg-blue-900 text-white text-center py-3 rounded-t-lg">
+													<h6 className="text-lg font-normal">NFLAT Junior</h6>
 												</div>
-												<div class="p-4 flex-grow">
-													<ul class="list-disc pl-6">
+												<div className="p-4 flex-grow">
+													<ul className="list-disc pl-6">
 														<li>For Class 6, 7 and 8 students</li>
 														<li>Language: English</li>
 														<li>Mode: Only in online (computer-based) mode</li>
@@ -261,15 +273,15 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 											</div>
 										</div>
 
-										<div class="flex flex-col h-full">
-											<div class="bg-white shadow rounded-lg border border-blue-900 flex flex-col h-full">
-												<div class="bg-blue-900 text-white text-center py-3 rounded-t-lg">
-													<h6 class="text-lg font-normal">
+										<div className="flex flex-col h-full">
+											<div className="bg-white shadow rounded-lg border border-blue-900 flex flex-col h-full">
+												<div className="bg-blue-900 text-white text-center py-3 rounded-t-lg">
+													<h6 className="text-lg font-normal">
 														NFLAT Intermediate
 													</h6>
 												</div>
-												<div class="p-4 flex-grow">
-													<ul class="list-disc pl-6">
+												<div className="p-4 flex-grow">
+													<ul className="list-disc pl-6">
 														<li>For Class 9 and 10 students</li>
 														<li>Language: English</li>
 														<li>Mode: Only in online (computer-based) mode</li>
@@ -278,13 +290,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 											</div>
 										</div>
 
-										<div class="flex flex-col h-full">
-											<div class="bg-white shadow rounded-lg border border-blue-900 flex flex-col h-full">
-												<div class="bg-blue-900 text-white text-center py-3 rounded-t-lg">
-													<h6 class="text-lg font-normal">NFLAT Senior</h6>
+										<div className="flex flex-col h-full">
+											<div className="bg-white shadow rounded-lg border border-blue-900 flex flex-col h-full">
+												<div className="bg-blue-900 text-white text-center py-3 rounded-t-lg">
+													<h6 className="text-lg font-normal">NFLAT Senior</h6>
 												</div>
-												<div class="p-4 flex-grow">
-													<ul class="list-disc pl-6">
+												<div className="p-4 flex-grow">
+													<ul className="list-disc pl-6">
 														<li>For Class 11 and 12 students</li>
 														<li>Language: English</li>
 														<li>Mode: Only in online (computer-based) mode</li>
@@ -299,15 +311,15 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 					</div>
 				</div>
 				<footer className="bg-gray-100 mt-10 dark:bg-gray-900">
-					<div class="lg:px-8 md:justify-between md:items-center md:flex py-4 px-6 max-w-7xl mx-auto">
-						<div class="md:order-2 gap-x-6 justify-center flex">
-							<a class="text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-700r no-underline">
-								<span class="sr-only">Facebook</span>
+					<div className="lg:px-8 md:justify-between md:items-center md:flex py-4 px-6 max-w-7xl mx-auto">
+						<div className="md:order-2 gap-x-6 justify-center flex">
+							<a className="text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-700r no-underline">
+								<span className="sr-only">Facebook</span>
 								<svg
 									fill="currentColor"
 									viewBox="0 0 24 24"
 									aria-hidden="true"
-									class="w-6 h-6"
+									className="w-6 h-6"
 								>
 									<path
 										fill-rule="evenodd"
@@ -316,13 +328,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 									></path>
 								</svg>
 							</a>
-							<a class="text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-700r no-underline">
-								<span class="sr-only">Instagram</span>
+							<a className="text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-700r no-underline">
+								<span className="sr-only">Instagram</span>
 								<svg
 									fill="currentColor"
 									viewBox="0 0 24 24"
 									aria-hidden="true"
-									class="w-6 h-6"
+									className="w-6 h-6"
 								>
 									<path
 										fill-rule="evenodd"
@@ -331,24 +343,24 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 									></path>
 								</svg>
 							</a>
-							<a class="text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-700r no-underline">
-								<span class="sr-only">X</span>
+							<a className="text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-700r no-underline">
+								<span className="sr-only">X</span>
 								<svg
 									fill="currentColor"
 									viewBox="0 0 24 24"
 									aria-hidden="true"
-									class="w-6 h-6"
+									className="w-6 h-6"
 								>
 									<path d="M13.6823 10.6218L20.2391 3H18.6854L12.9921 9.61788L8.44486 3H3.2002L10.0765 13.0074L3.2002 21H4.75404L10.7663 14.0113L15.5685 21H20.8131L13.6819 10.6218H13.6823ZM11.5541 13.0956L10.8574 12.0991L5.31391 4.16971H7.70053L12.1742 10.5689L12.8709 11.5655L18.6861 19.8835H16.2995L11.5541 13.096V13.0956Z"></path>
 								</svg>
 							</a>
-							<a class="text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-700r no-underline">
-								<span class="sr-only">Youtube</span>
+							<a className="text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-700r no-underline">
+								<span className="sr-only">Youtube</span>
 								<svg
 									fill="currentColor"
 									viewBox="0 0 24 24"
 									aria-hidden="true"
-									class="w-6 h-6"
+									className="w-6 h-6"
 								>
 									<path
 										fill-rule="evenodd"
@@ -358,7 +370,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, success }) {
 								</svg>
 							</a>
 						</div>
-						<div class="md:mt-0 md:order-1 text-gray-600 text-sm leading-6 text-center mt-8 dark:text-gray-300">
+						<div className="md:mt-0 md:order-1 text-gray-600 text-sm leading-6 text-center mt-8 dark:text-gray-300">
 							Copyright © 2024-2025: All Right Reserved
 						</div>
 					</div>

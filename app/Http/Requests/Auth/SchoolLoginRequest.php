@@ -27,7 +27,7 @@ class SchoolLoginRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
-			'school_uuid' => ['required', 'string', 'max:13', 'min:12'],
+			'school_uuid' => ['required', 'string', 'max:13'],
 			'password' => ['required', 'string'],
 		];
 	}

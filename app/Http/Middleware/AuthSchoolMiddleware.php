@@ -17,7 +17,7 @@ class AuthSchoolMiddleware
 	public function handle(Request $request, Closure $next): Response
 	{
 		if (!Auth::guard('school')->check()) {
-			return redirect()->route('school.login'); // Replace with your login route
+			return redirect()->route('home'); // Replace with your login route
 		}
 
 		return $next($request);

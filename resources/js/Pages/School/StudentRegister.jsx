@@ -55,7 +55,7 @@ export default function Dashboard({ nflatCategories, success }) {
 				</h2>
 			}
 		>
-			<Head title="Dashboard" />
+			<Head title="Student Registration" />
 
 			{success && (
 				<div className="pt-12">

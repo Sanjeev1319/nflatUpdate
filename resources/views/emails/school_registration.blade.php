@@ -10,5 +10,9 @@
     <p><strong>Email:</strong> {{ $school_email }}</p>
     <p><strong>School User ID/Login ID:</strong> {{ $school_uuid }}</p>
     <p><strong>Password:</strong> {{ $password }}</p>
+<p></p>
+<p></p>
+		<p>Best regards,</p>
+    <p><strong>Team NFLAT</strong></p>
 </body>
 </html>

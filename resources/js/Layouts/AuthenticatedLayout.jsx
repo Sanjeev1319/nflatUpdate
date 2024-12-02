@@ -83,6 +83,12 @@ export default function AuthenticatedLayout({ header, children }) {
 
 									<Dropdown.Content>
 										<Dropdown.Link
+											href={route("school.profileView")}
+											as="button"
+										>
+											Profile
+										</Dropdown.Link>
+										<Dropdown.Link
 											href={route("school.logout")}
 											method="post"
 											as="button"
@@ -146,23 +152,23 @@ export default function AuthenticatedLayout({ header, children }) {
 							Dashboard
 						</ResponsiveNavLink>
 						<ResponsiveNavLink
-									href={route("school.studentRegister")}
-									active={route().current("school.studentRegister")}
-								>
-									Student Register
-								</ResponsiveNavLink>
-								<ResponsiveNavLink
-									href={route("school.studentBulkRegister")}
-									active={route().current("school.studentBulkRegister")}
-								>
-									Student Bulk Register
-								</ResponsiveNavLink>
-								<ResponsiveNavLink
-									href={route("school.studentList")}
-									active={route().current("school.studentList")}
-								>
-									Student List
-								</ResponsiveNavLink>
+							href={route("school.studentRegister")}
+							active={route().current("school.studentRegister")}
+						>
+							Student Register
+						</ResponsiveNavLink>
+						<ResponsiveNavLink
+							href={route("school.studentBulkRegister")}
+							active={route().current("school.studentBulkRegister")}
+						>
+							Student Bulk Register
+						</ResponsiveNavLink>
+						<ResponsiveNavLink
+							href={route("school.studentList")}
+							active={route().current("school.studentList")}
+						>
+							Student List
+						</ResponsiveNavLink>
 					</div>
 
 					<div className="border-t border-gray-200 pb-1 pt-4">

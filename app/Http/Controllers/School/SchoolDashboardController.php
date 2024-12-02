@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StudentListResource;
 use App\Http\Resources\StudentResource;
+use App\Mail\SchoolUpdateMail;
+use App\Models\School;
 use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;  // Make sure you import the Excel facade correctly
@@ -152,7 +155,7 @@ class SchoolDashboardController extends Controller
 		if (!$file) {
 			return back()->withErrors(['file' => 'No file uploaded']);
 		}
-		
+
 		//dd(ini_get('upload_tmp_dir');
 
 		$import = new StudentsImport();
@@ -297,4 +300,85 @@ class SchoolDashboardController extends Controller
 
 		return redirect()->route('school.dashboard')->with('success', 'Student details edited successfully.');
 	}
+
+
+	/*
+	 *
+	 * View School Profile
+	 *
+	 */
+	public function profileView() {
+
+		$school_uuid = auth::guard('school')->user()->school_uuid;
+
+		$school_data = School::where('school_uuid', $school_uuid)->first();
+
+		return Inertia::render('School/Profile', [
+			'school'=> $school_data,
+		]);
+	}
+
+	/*
+	 *
+	 * View School Profile in edit mode
+	 *
+	 */
+	public function profileEdit(Request $request) {
+
+		$school_uuid = auth::guard('school')->user()->school_uuid;
+
+		$school_data = School::where('school_uuid', $school_uuid)->first();
+
+		return Inertia::render('School/Edit', [
+			'school'=> $school_data,
+		]);
+	}
+
+
+	/*
+	 *
+	 * Edit School profile data
+	 *
+	 */
+
+	public function profileEditStore(Request $request) {
+		// dd($request->toArray());
+		$school_uuid = $request->school_uuid;
+		$school_name = $request->school_name;
+		$school_email = $request->school_email;
+
+		$email_array = [
+			$request->incharge_email,
+			$request->principal_email,
+			$request->existing_principal_email,
+			$request->existing_incharge_email
+		];
+
+		$unique_emails = array_unique($email_array);
+
+		$request->validate([
+			'incharge_name' => 'required|string|max:255',
+			'incharge_email' => 'required|email|max:255',
+			'incharge_mobile' => 'required|string|digits:10', // 10 digit mobile number
+			'principal_name' => 'required|string|max:255',
+			'principal_email' => 'required|email|max:255',
+			'principal_mobile' => 'required|string|digits:10', // 10 digit mobile number
+		]);
+
+		School::where('school_uuid', $school_uuid)->update([
+			'incharge_name' => $request->incharge_name,
+			'incharge_email' => $request->incharge_email,
+			'incharge_mobile' => $request->incharge_mobile,
+			'principal_name' => $request->principal_name,
+			'principal_email' => $request->principal_email,
+			'principal_mobile' => $request->principal_mobile
+		]);
+
+		Mail::to($school_email)->cc($unique_emails)->send(new SchoolUpdateMail($school_name, $school_uuid));
+
+		return redirect()->route('school.profileView')->with([
+			'success'=> 'School details successfully!',
+		]);
+	}
+
 }

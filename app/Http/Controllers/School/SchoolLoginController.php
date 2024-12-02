@@ -47,6 +47,6 @@ class SchoolLoginController extends Controller
 
 		$request->session()->regenerateToken();
 
-		return redirect('school/login');
+		return redirect('/');
 	}
 }
