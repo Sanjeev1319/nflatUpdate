@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
 		//     'email' => 'test@example.com',
 		// ]);
 
-		Quizbank::factory()->count(2)->create();
-		Quizquestions::factory()->count(200)->create();
+		//Quizbank::factory()->count(2)->create();
+		//Quizquestions::factory()->count(200)->create();
 	}
 }
