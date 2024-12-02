@@ -34,6 +34,8 @@ class School extends Authenticatable
         'school_pincode',
         'school_district',
         'school_state',
+        'school_board',
+        'it_infra',
         'password',
         'email_verified_at',
         'mobile_verified_at',

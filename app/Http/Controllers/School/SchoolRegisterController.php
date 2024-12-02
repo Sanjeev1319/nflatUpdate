@@ -8,6 +8,7 @@ use App\Models\School;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,6 +32,8 @@ class SchoolRegisterController extends Controller
 	public function store(Request $request)
 	{
 
+		$school_board = $request->school_board;
+
 		// dd($request->all());
 		$request->validate([
 			'school_name' => 'required|string|max:255',
@@ -39,17 +42,25 @@ class SchoolRegisterController extends Controller
 			'school_mobile' => 'required|string|digits:10|unique:schools,school_mobile', // 10 digit mobile number
 			'school_mobile_otp' => 'required|string|size:6',
 			'incharge_name' => 'required|string|max:255',
-			'incharge_email' => 'nullable|email|max:255',
-			'incharge_mobile' => 'nullable|string|digits:10', // 10 digit mobile number
+			'incharge_email' => 'required|email|max:255',
+			'incharge_mobile' => 'required|string|digits:10', // 10 digit mobile number
 			'principal_name' => 'required|string|max:255',
-			'principal_email' => 'nullable|email|max:255',
-			'principal_mobile' => 'nullable|string|digits:10', // 10 digit mobile number
+			'principal_email' => 'required|email|max:255',
+			'principal_mobile' => 'required|string|digits:10', // 10 digit mobile number
 			'school_address_line_1' => 'required|string|max:255',
-			'school_area' => 'nullable|string|max:255',
+			'school_area' => 'required|string|max:255',
 			'school_pincode' => 'required|string|regex:/^\d{6}$/', // Assuming 6-digit pincode
 			'school_district' => 'required|string|max:255',
 			'school_state' => 'required|string|max:255',
+			'school_board' => 'required|string|max:255',
 		]);
+
+		if($request->school_board === 'Other') {
+			$request->validate([
+				'school_board_2' => 'required|string|max:255',
+			]);
+			$school_board = $request->school_board_2;
+		};
 
 		// Generate a random 8-character alphanumeric password
 		$randomPassword = str::random(8);
@@ -91,12 +102,16 @@ class SchoolRegisterController extends Controller
 			'school_pincode' => $request->school_pincode,
 			'school_district' => $request->school_district,
 			'school_state' => $request->school_state,
+			'school_board' => $school_board,
 			'password' => Hash::make($randomPassword),  // Save the hashed password in the database
 			'school_uuid' => $school_uuid,  // create a unique uuid
 		]);
 
+
+		Log::info($school_email . " : ". $randomPassword);
+
 		// Send confirmation email to the school email
-		Mail::to($school_email)->send(new SchoolRegistrationMail($school_name, $school_email, $randomPassword, $school_uuid));
+		// Mail::to($school_email)->send(new SchoolRegistrationMail($school_name, $school_email, $randomPassword, $school_uuid));
 
 		// return response()->json(['message' => 'School created successfully! A confirmation email has been sent.', 'data' => $school]);
 

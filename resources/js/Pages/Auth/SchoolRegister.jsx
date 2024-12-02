@@ -25,6 +25,7 @@ export default function Register() {
 		school_pincode: "",
 		school_district: "",
 		school_state: "",
+		school_board: "",
 	});
 
 	const [emailOtpSent, setEmailOtpSent] = useState(false);
@@ -38,6 +39,22 @@ export default function Register() {
 	const [districtOptions, setDistrictOptions] = useState([]); // Store fetched areas
 	const [stateOptions, setStateOptions] = useState([]); // Store fetched areas
 	const [pincodeError, setPincodeError] = useState(""); // For pincode-related errors
+
+	const [selectedOption, setSelectedOption] = useState("");
+	const [otherText, setOtherText] = useState("");
+
+	const handleOptionChange = (e) => {
+		const board = e.target.value;
+		setData("school_board", board);
+		setSelectedOption(e.target.value);
+		if (e.target.value !== "other") {
+			setOtherText("");
+		}
+	};
+
+	const handleOtherTextChange = (e) => {
+		setOtherText(e.target.value);
+	};
 
 	const fetchPincodeDetails = async (pincode) => {
 		if (pincode.length === 6) {
@@ -363,6 +380,44 @@ export default function Register() {
 									</SelectInput>
 									<InputError message={errors.school_state} />
 								</div>
+							</div>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+								<div className="">
+									<InputLabel htmlFor="school_board" className="">
+										School Board
+									</InputLabel>
+									<SelectInput
+										id="school_board"
+										value={selectedOption}
+										onChange={handleOptionChange}
+										required
+										className="w-full mt-2"
+									>
+										<option value="">Select School Board</option>
+										<option value="CBSE">CBSE</option>
+										<option value="CISCE">CISCE</option>
+										<option value="State Board">State Board</option>
+										<option value="Other">Other</option>
+									</SelectInput>
+									<InputError message={errors.school_board} />
+								</div>
+								{selectedOption === "Other" && (
+									<div>
+										<InputLabel htmlFor="school_board_2" className="">
+											Enter School Board Name
+										</InputLabel>
+										<TextInput
+											id="school_board_2"
+											value={data.school_board_2}
+											onChange={(e) =>
+												setData("school_board_2", e.target.value.toUpperCase())
+											}
+											required
+											className="w-full mt-2"
+										/>
+										<InputError message={errors.school_board_2} />
+									</div>
+								)}
 							</div>
 
 							<div className="mb-6">
