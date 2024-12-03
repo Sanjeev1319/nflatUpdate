@@ -41,8 +41,7 @@ class SMSController extends Controller
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$response = curl_exec($ch);
-		
-		$response = curl_exec($ch);
+
 if ($response === false) {
     $error = curl_error($ch);
     curl_close($ch);
