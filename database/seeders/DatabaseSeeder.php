@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(NFLATCategorySeeder::class);
 
 		// calling School Seeder
-		$this->call(SchoolSeeder::class);
+		//$this->call(SchoolSeeder::class);
 
 		// calling general Settings seeder
 		$this->call(generalSettingSeeder::class);
@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
 		//     'email' => 'test@example.com',
 		// ]);
 
-		Quizbank::factory()->count(2)->create();
-		Quizquestions::factory()->count(200)->create();
+		//Quizbank::factory()->count(2)->create();
+		//Quizquestions::factory()->count(200)->create();
 	}
 }
