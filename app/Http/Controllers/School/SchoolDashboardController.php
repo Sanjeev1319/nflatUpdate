@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\School;
 
+use App\Exports\StudentsExport;
 use App\Imports\StudentsImport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,7 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;  // Make sure you import the Excel facade correctly
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Excel as ExcelExcel;
 
 class SchoolDashboardController extends Controller
 {
@@ -379,6 +381,20 @@ class SchoolDashboardController extends Controller
 		return redirect()->route('school.profileView')->with([
 			'success'=> 'School details successfully!',
 		]);
+	}
+
+
+	/*
+	 * download the student record
+	 *
+	 */
+	public function studentExport(Request $request)
+	{
+		// Retrieve query parameters (e.g., date range or specific columns)
+    $filters = $request->all();
+
+		return Excel::download(new StudentsExport($filters), 'students.xlsx');
+
 	}
 
 }

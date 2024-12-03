@@ -39,5 +39,7 @@ Route::middleware(AuthSchoolMiddleware::class)->prefix('school')->name('school.'
 	Route::get('student-edit', [SchoolDashboardController::class, 'studentEdit'])->name('studentEdit');
 	Route::post('student-edit', [SchoolDashboardController::class, 'studentEditStore'])->name('studentEditStore');
 
+	Route::get('student-export', [SchoolDashboardController::class, 'studentExport'])->name('studentExport');
+
 	Route::post('student_destroy', [SchoolDashboardController::class, 'studentDestroy'])->name('studentDestroy');
 });
