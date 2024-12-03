@@ -46,9 +46,8 @@ class StudentController extends Controller
 		if ($quiz_logs !== null) {
 			if ($quiz_logs->attempt >= $maxAttempts) {
 				$allowAttempt = false;
-			}
-		}
-
+			};
+		};
 
 		if ($quiz_logs->exam_end !== null) {
 			$exam_complete = 'yes';

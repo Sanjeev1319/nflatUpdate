@@ -1,3 +1,4 @@
+import ExamButton from "@/Components/ExamButton";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import ExamScreenLayout from "@/Layouts/ExamScreenLayout";
@@ -329,19 +330,19 @@ export default function Exam({
 						<div className="p-6 text-gray-900 border-t">
 							<div className="grid grid-cols-5 gap-6 ">
 								{currentCategory.questions.map((question, index) => (
-									<PrimaryButton
+									<ExamButton
 										key={index}
-										className={`flex justify-center hover:bg-indigo-400 active:bg-indigo-700 focus:bg-indigo-700 ${
+										className={`flex justify-center hover:bg-red-400 active:bg-indigo-700 focus:bg-indigo-700 ${
 											index === currentQuestionIndex
-												? "bg-indigo-700"
+												? " bg-cyan-500 focus:bg-cyan-500 focus:ring-0"
 												: answers[question.id]
-												? "bg-green-500"
+												? " bg-green-500 focus:bg-slate-100"
 												: ""
 										}`}
 										onClick={() => handleQuestionSelect(index)}
 									>
 										{index + 1}
-									</PrimaryButton>
+									</ExamButton>
 								))}
 							</div>
 						</div>

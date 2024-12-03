@@ -37,7 +37,7 @@ export default function Instructions({ allowAttempt }) {
 									</div>
 									<div className="text-base leading-4 ms-3 ">
 										<InputLabel htmlFor="terms" className="">
-											<div>I have read all rules.</div>
+											<span>I have read all rules.</span>
 										</InputLabel>
 									</div>
 								</div>
