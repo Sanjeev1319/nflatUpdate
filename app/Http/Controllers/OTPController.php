@@ -32,10 +32,10 @@ class OTPController extends Controller
 		// 		->subject('Email OTP Verification');
 		// });
 
-		Log::info('Email OTP', [$otp]);
+		Log::info('Email OTP for ' . $request->email . ': ' . $otp);
 
 		// Send confirmation email to the school email
-		// Mail::to($request->email)->send(new SchoolOtpMail($otp, $request->email));
+		Mail::to($request->email)->send(new SchoolOtpMail($otp, $request->email));
 
 
 		// Redirect back with a success message (you can use session to flash the success message)
@@ -69,8 +69,8 @@ class OTPController extends Controller
 		Log::info('Mobile OTP for ' . $request->mobile . ': ' . $otp);
 
 		// Send the SMS using the SMSController
-		// $smsController = new SMSController($otp, $request->mobile);
-		// $smsController->sendSMS();
+		$smsController = new SMSController($otp, $request->mobile);
+		$smsController->sendSMS();
 
 		// Redirect back with a success message (you can use session to flash the success message)
 		return redirect()->back()->with('success', 'OTP sent to your mobile successfully.');

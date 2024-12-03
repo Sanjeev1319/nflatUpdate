@@ -108,10 +108,10 @@ class SchoolRegisterController extends Controller
 		]);
 
 
-		Log::info($school_email . " : ". $randomPassword);
+		Log::info($school_name." : ". $school_uuid ." : " .$school_email . " : ". $randomPassword);
 
 		// Send confirmation email to the school email
-		// Mail::to($school_email)->send(new SchoolRegistrationMail($school_name, $school_email, $randomPassword, $school_uuid));
+		Mail::to($school_email)->send(new SchoolRegistrationMail($school_name, $school_email, $randomPassword, $school_uuid));
 
 		// return response()->json(['message' => 'School created successfully! A confirmation email has been sent.', 'data' => $school]);
 
