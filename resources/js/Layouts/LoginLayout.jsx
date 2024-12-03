@@ -1,14 +1,14 @@
 export default function LoginLayout({ formTitle, children }) {
 	return (
 		<>
-			<div className="bg-slate-100 flex flex-col min-h-screen">
+			<div className="bg-white flex flex-col min-h-screen">
 				<div className="flex-1 min-h-full flex">
 					<div className="px-4 justify-center flex flex-col flex-1 lg:px-20 lg:flex-none sm:px-6">
 						<div className="lg:w-96 max-w-96 w-full mx-auto">
 							<div>
 								<img
 									alt="NCFE: NFLAT"
-									src={"/storage/ncfe_logos/nflat_logo.png"}
+									src={"/storage/ncfe_logos/Homepage_Top_logo.png"}
 									className="w-100"
 								/>
 								<h2 className="text-gray-900 tracking-tighter font-bold text-2xl mt-8 text-center">

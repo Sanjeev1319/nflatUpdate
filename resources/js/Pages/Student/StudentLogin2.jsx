@@ -2,6 +2,7 @@ import Checkbox from "@/Components/Checkbox";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
+import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
@@ -32,7 +33,7 @@ export default function Login({ status, canResetPassword }) {
 				<div className="mb-4 text-sm font-medium text-green-600">{status}</div>
 			)}
 
-			<form onSubmit={submit}>
+			{/* <form onSubmit={submit}>
 				<div>
 					<InputLabel htmlFor="student_uuid" value="Student ID" />
 
@@ -80,7 +81,16 @@ export default function Login({ status, canResetPassword }) {
 						Log in
 					</PrimaryButton>
 				</div>
-			</form>
+			</form> */}
+			<div className="text-4xl flex flex-col justify-center items-center py-28 text-center">
+				NFLAT Quiz will start on December 16, 2024.
+				<Link
+					href={route("home")}
+					className="inline-flex items-center rounded-md border border-gray-300 px-7 py-3 text-xs font-semibold uppercase tracking-widest shadow-sm duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 mt-5 p-5 hover:border-indigo-700 hover:text-white hover:bg-indigo-500 transition-all"
+				>
+					Home Page
+				</Link>
+			</div>
 		</GuestLayout>
 	);
 }

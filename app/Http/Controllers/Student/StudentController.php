@@ -50,7 +50,7 @@ class StudentController extends Controller
 		}
 
 
-		if ($quiz_logs->exam_end != null) {
+		if ($quiz_logs->exam_end !== null) {
 			$exam_complete = 'yes';
 		}
 

@@ -25,7 +25,7 @@ export default function Login({ status, canResetPassword }) {
 
 	return (
 		<LoginLayout formTitle={<>School Login</>}>
-			<Head title="Log in" />
+			<Head title="School - Log in" />
 
 			{status && (
 				<div className="mb-4 text-sm font-medium text-green-600">{status}</div>
