@@ -25,36 +25,39 @@ export default function Instructions({ allowAttempt }) {
 									Instructions
 								</h3>
 
-								<div className="flex items-start relative pt-5">
-									<div className="flex leading-6 items-center">
-										<input
-											id="terms"
-											name="terms"
-											type="checkbox"
-											className="text-indigo-600 border-red-600 rounded w-4 h-4"
-											onClick={(e) => setData("terms", e.target.checked)}
-										/>
-									</div>
-									<div className="text-base leading-4 ms-3 ">
-										<InputLabel htmlFor="terms" className="">
-											<span>I have read all rules.</span>
-										</InputLabel>
-									</div>
-								</div>
+								{allowAttempt === true ? (
+									<>
+										<div className="flex items-start relative pt-5">
+											<div className="flex leading-6 items-center">
+												<input
+													id="terms"
+													name="terms"
+													type="checkbox"
+													className="text-indigo-600 border-red-600 rounded w-4 h-4"
+													onClick={(e) => setData("terms", e.target.checked)}
+												/>
+											</div>
+											<div className="text-base leading-4 ms-3 ">
+												<InputLabel htmlFor="terms" className="">
+													<span>I have read all rules.</span>
+												</InputLabel>
+											</div>
+										</div>
 
-								<div>
-									<InputError message={errors.terms} className="mt-2" />
-								</div>
-
-								<div className="text-center">
-									{allowAttempt === true ? (
-										<PrimaryButton type="submit" className="mt-3">
-											Start Exam
-										</PrimaryButton>
-									) : (
-										<div>You have already attempted the test.</div>
-									)}
-								</div>
+										<div>
+											<InputError message={errors.terms} className="mt-2" />
+										</div>
+										<div className="text-center">
+											<PrimaryButton type="submit" className="mt-3">
+												Start Exam
+											</PrimaryButton>
+										</div>
+									</>
+								) : (
+									<div className="p-3 mt-4 rounded-md text-red-800 bg-red-200 border-red-300 border text-center">
+										You have already attempted the test.
+									</div>
+								)}
 							</form>
 						</div>
 					</div>

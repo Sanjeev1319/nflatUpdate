@@ -21,17 +21,21 @@ class QuizController extends Controller
 		$exam_endtime = Carbon::now();
 		$final_submit = 2;
 
-		$quiz_log_query = DB::table("quiz_logs")->where('student_uuid', $student_uuid)->first();
 
-		if ($quiz_log_query->submit_type == $final_submit) {
-			return redirect()->route("student.index");
-		}
+		$quiz_log_query = DB::table("quiz_logs")->where('student_uuid', $student_uuid)->first();
+		$getAttempt = $quiz_log_query->attempt;
+		$getExamJson = json_decode($quiz_log_query->exam_time, true);
+
+		$getExamJson[$getAttempt]['exam_end'] = $exam_endtime;
+
+		$addExamEndTime = json_encode($getExamJson);
+
 
 		DB::table("quiz_logs")
 			->where("student_uuid", $student_uuid)
 			->update([
 				'answers' => $answers,
-				'exam_end' => $exam_endtime,
+				'exam_time' => $addExamEndTime,
 				'submit_type' => $final_submit,
 				'remaining_time' => null,
 			]);
@@ -51,12 +55,21 @@ class QuizController extends Controller
 		$answers = json_encode($request->answers);
 		$remaining_time = $request->remaining_time;
 		$interal_submit = 1;
+		$exam_endtime = Carbon::now();
+
+		$quiz_log_query = DB::table("quiz_logs")->where('student_uuid', $student_uuid)->first();
+		$getAttempt = $quiz_log_query->attempt;
+		$getExamJson = json_decode($quiz_log_query->exam_time, true);
+
+		$getExamJson[$getAttempt]['exam_end'] = $exam_endtime;
+
+		$addExamEndTime = json_encode($getExamJson);
 
 		DB::table("quiz_logs")
 			->where("student_uuid", $student_uuid)
 			->update([
 				'answers' => $answers,
-				'remaining_time' => $remaining_time,
+				'exam_time' => $addExamEndTime,
 				'submit_type' => $interal_submit
 			]);
 	}

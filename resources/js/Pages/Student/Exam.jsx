@@ -1,3 +1,4 @@
+import CategoryButton from "@/Components/CategoryButton";
 import ExamButton from "@/Components/ExamButton";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
@@ -21,24 +22,24 @@ export default function Exam({
 	const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-	// Initialize answers from retryAnswers or localStorage
+	// Initialize answers from retryAnswers or sessionStorage
 	const [answers, setAnswers] = useState(() => {
 		if (retryAnswers) {
-			localStorage.setItem("quiz_answers", JSON.stringify(retryAnswers));
+			sessionStorage.setItem("quiz_answers", JSON.stringify(retryAnswers));
 			return retryAnswers;
 		}
-		const savedAnswers = localStorage.getItem("quiz_answers");
+		const savedAnswers = sessionStorage.getItem("quiz_answers");
 		return savedAnswers ? JSON.parse(savedAnswers) : {};
 	});
 
-	// Initialize remaining time from retryTime or localStorage
+	// Initialize remaining time from retryTime or sessionStorage
 	const [remainingTime, setRemainingTime] = useState(() => {
 		if (retryTime) {
 			const retryTimeInSeconds = retryTime * 60; // Assuming retryTime is in minutes
-			localStorage.setItem("quiz_timer", retryTimeInSeconds.toString());
+			sessionStorage.setItem("quiz_timer", retryTimeInSeconds.toString());
 			return retryTimeInSeconds;
 		}
-		const storedTime = localStorage.getItem("quiz_timer");
+		const storedTime = sessionStorage.getItem("quiz_timer");
 		return storedTime ? parseInt(storedTime, 10) : timeLeft * 60;
 	});
 
@@ -46,15 +47,15 @@ export default function Exam({
 	const currentCategory = categories[currentCategoryIndex];
 	const currentQuestion = currentCategory.questions[currentQuestionIndex];
 
-	// Save answers to localStorage whenever they change
+	// Save answers to sessionStorage whenever they change
 	useEffect(() => {
-		localStorage.setItem("quiz_answers", JSON.stringify(answers));
+		sessionStorage.setItem("quiz_answers", JSON.stringify(answers));
 		setData("answers", answers);
 	}, [answers]);
 
-	// Save remaining time to localStorage every second
+	// Save remaining time to sessionStorage every second
 	useEffect(() => {
-		localStorage.setItem("quiz_timer", remainingTime.toString());
+		sessionStorage.setItem("quiz_timer", remainingTime.toString());
 		setData("remaining_time", remainingTime);
 	}, [remainingTime]);
 
@@ -116,7 +117,7 @@ export default function Exam({
 	const handleOptionSelect = (questionId, optionKey) => {
 		const updatedAnswers = { ...answers, [questionId]: optionKey };
 		setAnswers(updatedAnswers);
-		localStorage.setItem("quiz_answers", JSON.stringify(updatedAnswers));
+		sessionStorage.setItem("quiz_answers", JSON.stringify(updatedAnswers));
 	};
 
 	// Handle category selection
@@ -164,19 +165,30 @@ export default function Exam({
 		return () => clearInterval(interval); // Cleanup interval on component unmount
 	}, [answers]);
 
+	// Function to get current time with microseconds in ISO format
+	const getCurrentTimeWithMicroseconds = () => {
+		const now = new Date();
+		const isoString = now.toISOString(); // Gets time in "2024-12-08T19:12:01.675Z" format
+		const microseconds =
+			now.getMilliseconds().toString().padStart(3, "0") + "000"; // Adds microseconds as "675000"
+		return isoString.replace("Z", `.${microseconds}Z`);
+	};
+
 	// Submit quiz
 	const handleIntervalSubmit = () => {
 		// Explicitly set the answers before submission
 		setData("answers", answers);
+		// Get the current time in the required format
+		const currentTime = getCurrentTimeWithMicroseconds();
 
 		console.log("Submitting Data:", {
 			student_uuid: student_uuid,
 			answers: answers,
-			remaining_time: remainingTime,
+			currentTime: currentTime,
 		});
 
 		post(route("student.quiz.intervalSubmit"), {
-			data: { ...data, answers, remainingTime }, // Ensure the latest answers are included
+			data: { ...data, answers, currentTime }, // Ensure the latest answers are included
 			preserveState: true, // Prevent page state from resetting
 			preserveScroll: true, // Prevent page scroll position from resetting
 			onSuccess: () => {
@@ -200,8 +212,8 @@ export default function Exam({
 			data,
 			onSuccess: () => {
 				console.log("Submission Successful!");
-				localStorage.removeItem("quiz_answers");
-				localStorage.removeItem("quiz_timer");
+				sessionStorage.removeItem("quiz_answers");
+				sessionStorage.removeItem("quiz_timer");
 			},
 			onError: (error) => {
 				console.error("Submission Error:", error);
@@ -248,24 +260,22 @@ export default function Exam({
 										<strong>Options:</strong>{" "}
 									</h3>
 									<div className="lg:w-2/4 md:w-2/3">
-										{["option_a", "option_b", "option_c", "option_d"].map(
-											(key, index) => (
-												<SecondaryButton
-													key={index}
-													className={`flex w-full my-3 py-4 hover:bg-green-300 focus:bg-green-500 ${
-														answers[currentQuestion.id] === key
-															? " bg-green-400 text-green-950 "
-															: ""
-													}`}
-													onClick={() =>
-														handleOptionSelect(currentQuestion.id, key)
-													}
-												>
-													{String.fromCharCode(65 + index)}.{" "}
-													{currentQuestion[key]}
-												</SecondaryButton>
-											)
-										)}
+										{["A", "B", "C", "D"].map((key, index) => (
+											<SecondaryButton
+												key={index}
+												className={`flex w-full my-3 py-4 hover:bg-green-300 focus:bg-green-500 ${
+													answers[currentQuestion.id] === key
+														? " bg-green-400 text-green-950 "
+														: ""
+												}`}
+												onClick={() =>
+													handleOptionSelect(currentQuestion.id, key)
+												}
+											>
+												{String.fromCharCode(65 + index)}.{" "}
+												{currentQuestion[key]}
+											</SecondaryButton>
+										))}
 									</div>
 								</div>
 								<div className="flex py-5">
@@ -315,15 +325,17 @@ export default function Exam({
 						<div className="p-6 text-gray-900">
 							<div className="grid grid-cols-2 pb-6 gap-4">
 								{categories.map((category, index) => (
-									<PrimaryButton
+									<CategoryButton
 										key={index}
-										className={`flex justify-center hover:bg-indigo-400 active:bg-indigo-700 focus:bg-indigo-700 ${
-											index === currentCategoryIndex ? "bg-indigo-700" : ""
+										className={`flex justify-center text-white ${
+											index === currentCategoryIndex
+												? " rounded-full bg-fuchsia-700"
+												: " rounded-md bg-indigo-600 hover:bg-indigo-900"
 										}`}
 										onClick={() => handleCategorySelect(index)}
 									>
 										{category.category_name}
-									</PrimaryButton>
+									</CategoryButton>
 								))}
 							</div>
 						</div>
@@ -332,12 +344,12 @@ export default function Exam({
 								{currentCategory.questions.map((question, index) => (
 									<ExamButton
 										key={index}
-										className={`flex justify-center hover:bg-red-400 active:bg-indigo-700 focus:bg-indigo-700 ${
+										className={`flex justify-center text-white ${
 											index === currentQuestionIndex
-												? " bg-cyan-500 focus:bg-cyan-500 focus:ring-0"
+												? " bg-fuchsia-900 focus:ring-0 rounded-full"
 												: answers[question.id]
-												? " bg-green-500 focus:bg-slate-100"
-												: ""
+												? " bg-green-500 rounded-lg"
+												: " bg-indigo-700 hover:bg-red-700 hover:rounded-md"
 										}`}
 										onClick={() => handleQuestionSelect(index)}
 									>

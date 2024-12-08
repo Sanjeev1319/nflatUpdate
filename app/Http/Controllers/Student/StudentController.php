@@ -6,6 +6,7 @@ use App\Http\Resources\StudentResource;
 use App\Models\Quizquestions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Quizbank;
 use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,7 @@ class StudentController extends Controller
 			};
 		};
 
-		if ($quiz_logs->exam_end !== null) {
+		if ($quiz_logs->submit_type == 2) {
 			$exam_complete = 'yes';
 		}
 
@@ -65,77 +66,94 @@ class StudentController extends Controller
 
 
 	/**
-	 * prepare for the test make necessary arrangements.
+	 * Handles the initialization of the student's exam process.
+	 *
+	 * Validates student agreement to terms, retrieves settings, checks for existing quiz logs,
+	 * generates questions if necessary, and updates the student's exam log and session data.
+	 *
+	 * @param Request $request
+	 * @param Student $student
+	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function startExamStore(Request $request, Student $student)
 	{
-
-		$validate = $request->validate([
+		// Validate that the student has accepted the terms and conditions
+		$request->validate([
 			'terms' => 'accepted',
 		], [
 			'terms.accepted' => 'You must accept the terms and conditions before starting the exam.',
 		]);
 
-		// get the general settings
-		$general_settings = DB::table('general_settings')->get();
+		// Retrieve general settings
+		$generalSettings = DB::table('general_settings')->get();
+		$examTimeSetting = $generalSettings->where('setting', 'exam_time')->first();
 
-		// set the basic details
-		$student_uuid = Auth::guard('student')->user()->student_uuid;
-		$examStartTime = Carbon::now();
+		// Get the authenticated student's UUID and category
+		$studentUuid = Auth::guard('student')->user()->student_uuid;
+		$examStartTime = now();
+		$nflatCategory = Quizbank::where('quiz_name', Auth::guard('student')->user()->nflat_category)->value('id');
 
-		// quiz logs
-		$quiz_log = DB::table('quiz_logs')->where('student_uuid', $student_uuid)->first();
+		// Check if a quiz log exists for the student
+		$quizLog = DB::table('quiz_logs')->where('student_uuid', $studentUuid)->first();
 
+		// Create a JSON object for tracking exam attempts with start time
+		$attemptKey = $quizLog->attempt + 1;
 
-		if ($quiz_log->questions == null) {
-			// Select 10 random questions from each category
-			$categories = ['Banking', 'Insurance', 'Investment', 'Pension'];
-			$questions = [
-				'categories' => []
-			];
+		// Decode existing exam_time if it exists, otherwise start with an empty array
+		$existingExamTime = $quizLog->exam_time ? json_decode($quizLog->exam_time, true) : [];
 
+		// Add the new attempt's start time to the array
+		$existingExamTime[$attemptKey] = ['start_time' => $examStartTime];
+
+		// Encode the updated array back to JSON
+		$examTimeArray = json_encode($existingExamTime);
+
+		if (is_null($quizLog->questions)) {
+			// Define categories and prepare questions for the quiz
+			$categories = ['General', 'Banking', 'Insurance', 'Investment', 'Pension'];
+			$questions = ['categories' => []];
+
+			// Fetch 12 random questions for each category
 			foreach ($categories as $category) {
 				$questions['categories'][] = [
 					'category_name' => $category,
-					'questions' => Quizquestions::where('category', $category)
+					'questions' => Quizquestions::where('quizbank_id', $nflatCategory)
+						->where('category', $category)
 						->inRandomOrder()
-						->limit(10)
+						->limit(12)
 						->get()
-						->toArray()
+						->toArray(),
 				];
 			}
 
-			// Save questions in JSON format
-			$jsonFile = "quiz_sessions/{$student_uuid}_questions.json";
+			// Save questions to a JSON file for the student
+			$jsonFile = "quiz_sessions/{$studentUuid}_questions.json";
 			Storage::put($jsonFile, json_encode($questions));
 
-			// If question does not exists, increment the attempt value and add a question
-			DB::table('quiz_logs')
-				->where('student_uuid', $student_uuid)
-				->update([
-					'attempt' => $quiz_log->attempt + 1,
-					'exam_start' => $examStartTime, // Optional: Update exam start time
-					'questions' => json_encode($questions),
-				]);
+			// Update the quiz log with new questions and increment the attempt count
+			DB::table('quiz_logs')->where('student_uuid', $studentUuid)->update([
+				'attempt' => $attemptKey,
+				'exam_time' => $examTimeArray,
+				'questions' => json_encode($questions),
+			]);
 		} else {
-			// If question exists, increment the attempt value
-			DB::table('quiz_logs')
-				->where('student_uuid', $student_uuid)
-				->update([
-					'attempt' => $quiz_log->attempt + 1,
-					'exam_start' => $examStartTime, // Optional: Update exam start time
-				]);
+			// If questions already exist, only update the attempt count and exam time
+			DB::table('quiz_logs')->where('student_uuid', $studentUuid)->update([
+				'attempt' => $attemptKey,
+				'exam_time' => $examTimeArray,
+			]);
 		}
 
-		$exam_time = $general_settings->where('setting', 'exam_time')->first();
+		// Store necessary exam data in the session
+		Session::put([
+			'exam_start_time' => $examStartTime,
+			'student_uuid' => $studentUuid,
+			'exam_time' => $examTimeSetting->value,
+			'quiz_start' => true,
+		]);
 
-		Session::put('exam_start_time', now());
-		Session::put('student_uuid', $student_uuid);
-		Session::put('exam_time', $exam_time->value);
-		Session::put('quiz_start', true);
-		// Session::forget('quiz_start_time');
-
-		return redirect()->intended(route('student.startExam', absolute: false));
+		// Redirect the student to the exam page
+		return redirect()->route('student.startExam');
 	}
 
 

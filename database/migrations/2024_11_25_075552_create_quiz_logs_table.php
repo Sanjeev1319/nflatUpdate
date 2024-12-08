@@ -16,6 +16,7 @@ return new class extends Migration
 			$table->string('student_uuid');
 			$table->dateTime('exam_start')->nullable();
 			$table->dateTime('exam_end')->nullable();
+			$table->json('exam_time')->nullable();
 			$table->integer('attempt')->nullable();
 			$table->timestamps();
 

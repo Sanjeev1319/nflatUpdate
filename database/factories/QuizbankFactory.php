@@ -17,7 +17,7 @@ class QuizbankFactory extends Factory
 	public function definition(): array
 	{
 		return [
-			'quiz_name' => fake()->words(3, true),
+			'quiz_name' => fake()->randomElement(['Junior', 'Intermediate', 'Senior']),
 		];
 	}
 }

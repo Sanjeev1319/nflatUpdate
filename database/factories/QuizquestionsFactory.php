@@ -17,14 +17,14 @@ class QuizquestionsFactory extends Factory
 	public function definition(): array
 	{
 		return [
-			'quizbank_id' => fake()->randomElement(['1', '2']),
-			'category' => fake()->randomElement(['Banking', 'Investment', 'Insurance', 'Pension']),
-			'question' => fake()->sentence(10),
-			'option_a' => fake()->word(),
-			'option_b' => fake()->word(),
-			'option_c' => fake()->word(),
-			'option_d' => fake()->word(),
-			'correct_answer' => fake()->randomElement(['a', 'b', 'c', 'd']),
+			'quizbank_id' => fake()->randomElement(['1', '2', '3']),
+			'category' => fake()->randomElement(['Banking', 'Investment', 'Insurance', 'Pension', 'General']),
+			'question' => fake()->sentence(15),
+			'A' => fake()->word(),
+			'B' => fake()->word(),
+			'C' => fake()->word(),
+			'D' => fake()->word(),
+			'correct_answer' => fake()->randomElement(['A', 'B', 'C', 'D']),
 		];
 	}
 }

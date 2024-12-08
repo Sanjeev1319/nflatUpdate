@@ -54,7 +54,7 @@ class StudentLoginRequest extends FormRequest
 		}
 
 		$student->update([
-			'last_login' => Carbon::now()
+			'last_login' => Carbon::now('Asia/Kolkata')
 		]);
 
 

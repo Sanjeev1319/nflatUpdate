@@ -1,4 +1,4 @@
-export default function ExamButton({
+export default function CategoryButton({
 	className = "",
 	disabled,
 	children,
@@ -10,7 +10,7 @@ export default function ExamButton({
 			type={type}
 			{...props}
 			className={
-				`inline-flex items-center border border-transparent px-4 py-3 font-semibold uppercase tracking-widest transition-all duration-150 ease-in-out  ${
+				`inline-flex items-center border border-transparent px-4 py-3 text-xs font-semibold uppercase tracking-widest transition-all duration-150 ease-in-out ${
 					disabled && "opacity-25"
 				} ` + className
 			}
