@@ -102,7 +102,7 @@ export default function Exam({
 		}, 1000);
 
 		return () => clearInterval(timer);
-	}, []);
+	}, [answers]);
 
 	// Format time (MM:SS)
 	const formatTime = (time) => {
@@ -152,7 +152,7 @@ export default function Exam({
 		}
 	};
 
-	// Trigger submission every 5 minutes
+	// Trigger submission every 2 minutes
 	useEffect(() => {
 		// Explicitly set the answers before submission
 		setData("answers", answers);
@@ -160,7 +160,7 @@ export default function Exam({
 		const interval = setInterval(() => {
 			console.log("Auto-submitting after 2 minutes...");
 			handleIntervalSubmit();
-		}, 2 * 60 * 1000); // 5 minutes in milliseconds
+		}, 50 * 1000); // 5 minutes in milliseconds
 
 		return () => clearInterval(interval); // Cleanup interval on component unmount
 	}, [answers]);
@@ -176,27 +176,27 @@ export default function Exam({
 
 	// Submit quiz
 	const handleIntervalSubmit = () => {
-		// Explicitly set the answers before submission
+		// Explicitly set the latest answers before submission
 		setData("answers", answers);
-		// Get the current time in the required format
-		const currentTime = getCurrentTimeWithMicroseconds();
 
+		// Log the current time and data for debugging
+		const currentTime = getCurrentTimeWithMicroseconds();
 		console.log("Submitting Data:", {
-			student_uuid: student_uuid,
-			answers: answers,
-			currentTime: currentTime,
+			student_uuid,
+			answers,
+			currentTime,
 		});
 
 		post(route("student.quiz.intervalSubmit"), {
-			data: { ...data, answers, currentTime }, // Ensure the latest answers are included
-			preserveState: true, // Prevent page state from resetting
-			preserveScroll: true, // Prevent page scroll position from resetting
+			data: { ...data, currentTime },
+			preserveState: true, // Prevent state reset
+			preserveScroll: true, // Maintain scroll position
 			onSuccess: () => {
-				console.log("Submission Successful!");
-				console.log(data);
+				console.log("Interval submission successful!");
+				console.log("Interval triggered at:", new Date().toISOString());
 			},
 			onError: (error) => {
-				console.error("Submission Error:", error);
+				console.error("Interval submission error:", error);
 			},
 		});
 	};

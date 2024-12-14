@@ -52,10 +52,12 @@ class QuizController extends Controller
 	public function quizIntervalSubmit(Request $request)
 	{
 		$student_uuid = $request->student_uuid;
-		$answers = json_encode($request->answers);
+		$answers = json_encode($request->input("answers"));
 		$remaining_time = $request->remaining_time;
 		$interal_submit = 1;
 		$exam_endtime = Carbon::now();
+
+		// dd($request->input("answers"));
 
 		$quiz_log_query = DB::table("quiz_logs")->where('student_uuid', $student_uuid)->first();
 		$getAttempt = $quiz_log_query->attempt;
