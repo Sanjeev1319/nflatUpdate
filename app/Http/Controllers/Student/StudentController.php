@@ -108,7 +108,11 @@ class StudentController extends Controller
 		// Decode existing exam_time if it exists, otherwise start with an empty array
 		$existingExamTime = $quizLog->exam_time ? json_decode($quizLog->exam_time, true) : [];
 		$countAttemptExamTimes = count($existingExamTime);
-		$remainingTime = $existingExamTime[$countAttemptExamTimes]['exam_end'] - $existingExamTime[$countAttemptExamTimes]['start_time'];
+		// Convert to Carbon instances
+		$examJsonEndTime = Carbon::parse($existingExamTime[$countAttemptExamTimes]['exam_end']);
+		$examJsonStartTime = Carbon::parse($existingExamTime[$countAttemptExamTimes]['start_time']);
+
+		$remainingTime = $examJsonEndTime->diffInSeconds($examJsonStartTime);
 
 		dd($remainingTime);
 		// dd($existingExamTime[$countAttemptExamTimes]['exam_end']);
