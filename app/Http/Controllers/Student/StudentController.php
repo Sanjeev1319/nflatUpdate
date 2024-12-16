@@ -30,6 +30,7 @@ class StudentController extends Controller
 		};
 
 		$allowAttempt = true;
+		$retryAttempt = false;
 
 		$student_details = $student::where("student_uuid", Auth::guard('student')->user()->student_uuid)->first();
 
@@ -54,13 +55,18 @@ class StudentController extends Controller
 			$exam_complete = 'yes';
 		}
 
+		if($quiz_logs->submit_type == 1) {
+			$retryAttempt = true;
+		}
+
 		// dd($students);
 		return Inertia::render('Student/Index', [
 			'error' => session('error'),
 			'studentData' => new StudentResource($student_details),
 			'route' => session('route'),
 			'allowAttempt' => $allowAttempt,
-			'examComplete' => $exam_complete
+			'examComplete' => $exam_complete,
+			'retryAttempt' => $retryAttempt
 		]);
 	}
 
@@ -101,6 +107,12 @@ class StudentController extends Controller
 
 		// Decode existing exam_time if it exists, otherwise start with an empty array
 		$existingExamTime = $quizLog->exam_time ? json_decode($quizLog->exam_time, true) : [];
+		$countAttemptExamTimes = count($existingExamTime);
+		$remainingTime = $existingExamTime[$countAttemptExamTimes]['exam_end'] - $existingExamTime[$countAttemptExamTimes]['start_time'];
+
+		dd($remainingTime);
+		// dd($existingExamTime[$countAttemptExamTimes]['exam_end']);
+		// dd($existingExamTime[$countAttemptExamTimes]['start_time']);
 
 		// Add the new attempt's start time to the array
 		$existingExamTime[$attemptKey] = ['start_time' => $examStartTime];

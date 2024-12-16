@@ -1,110 +1,100 @@
 import CategoryButton from "@/Components/CategoryButton";
+import DangerButton from "@/Components/DangerButton";
 import ExamButton from "@/Components/ExamButton";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
+import SuccessButton from "@/Components/SuccessButton";
 import ExamScreenLayout from "@/Layouts/ExamScreenLayout";
 import { Head, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-export default function Exam({
-	student_uuid,
-	questions,
-	timeLeft,
-	retryTime,
-	retryAnswers,
-}) {
-	const { data, setData, post, processing, errors, reset, setError } = useForm({
+export default function Exam({ student_uuid, questions, retryAnswers }) {
+	console.log(retryAnswers);
+
+	const { data, setData, post, processing } = useForm({
 		answers: "",
 		student_uuid: student_uuid,
 		remaining_time: "",
 	});
 
-	const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
-	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+	// Initialize timer start time
+	const [startTime] = useState(() => {
+		const savedStartTime = sessionStorage.getItem("exam_start_time");
+		if (savedStartTime) return new Date(savedStartTime);
+		const newStartTime = new Date();
+		sessionStorage.setItem("exam_start_time", newStartTime);
+		return newStartTime;
+	});
 
-	// Initialize answers from retryAnswers or sessionStorage
+	// Initialize answers
 	const [answers, setAnswers] = useState(() => {
-		if (retryAnswers) {
-			sessionStorage.setItem("quiz_answers", JSON.stringify(retryAnswers));
-			return retryAnswers;
-		}
-		const savedAnswers = sessionStorage.getItem("quiz_answers");
+		const savedAnswers = retryAnswers || sessionStorage.getItem("quiz_answers");
 		return savedAnswers ? JSON.parse(savedAnswers) : {};
 	});
 
-	// Initialize remaining time from retryTime or sessionStorage
-	const [remainingTime, setRemainingTime] = useState(() => {
-		if (retryTime) {
-			const retryTimeInSeconds = retryTime * 60; // Assuming retryTime is in minutes
-			sessionStorage.setItem("quiz_timer", retryTimeInSeconds.toString());
-			return retryTimeInSeconds;
-		}
-		const storedTime = sessionStorage.getItem("quiz_timer");
-		return storedTime ? parseInt(storedTime, 10) : timeLeft * 60;
-	});
+	const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+	// Categories and current question
 	const categories = questions.categories;
 	const currentCategory = categories[currentCategoryIndex];
 	const currentQuestion = currentCategory.questions[currentQuestionIndex];
 
-	// Save answers to sessionStorage whenever they change
+	// Calculate remaining time (in seconds) based on start time
+	const totalTimeInSeconds = (retryTime || timeLeft) * 60; // Retry time or initial time in seconds
+	const calculateRemainingTime = () => {
+		const elapsedSeconds = Math.floor((new Date() - startTime) / 1000);
+		return Math.max(totalTimeInSeconds - elapsedSeconds, 0);
+	};
+
+	// Real-time timer
+	const [remainingTime, setRemainingTime] = useState(calculateRemainingTime);
+
+	// Update session storage for answers
 	useEffect(() => {
 		sessionStorage.setItem("quiz_answers", JSON.stringify(answers));
 		setData("answers", answers);
 	}, [answers]);
 
-	// Save remaining time to sessionStorage every second
-	useEffect(() => {
-		sessionStorage.setItem("quiz_timer", remainingTime.toString());
-		setData("remaining_time", remainingTime);
-	}, [remainingTime]);
-
-	// Disable keyboard events
-	useEffect(() => {
-		const disableKeyboardEvents = (event) => {
-			event.preventDefault();
-		};
-
-		window.addEventListener("keydown", disableKeyboardEvents);
-		window.addEventListener("keypress", disableKeyboardEvents);
-
-		return () => {
-			window.removeEventListener("keydown", disableKeyboardEvents);
-			window.removeEventListener("keypress", disableKeyboardEvents);
-		};
-	}, []);
-
-	// Disable browser refresh via navigation events
-	useEffect(() => {
-		const handleBeforeUnload = (event) => {
-			event.preventDefault();
-			event.returnValue = "";
-		};
-
-		window.addEventListener("beforeunload", handleBeforeUnload);
-
-		return () => {
-			window.removeEventListener("beforeunload", handleBeforeUnload);
-		};
-	}, []);
-
 	// Timer logic
 	useEffect(() => {
 		const timer = setInterval(() => {
-			setRemainingTime((prevTime) => {
-				if (prevTime <= 1) {
-					clearInterval(timer);
-					handleSubmit(); // Automatically submit when time is up
-					return 0;
-				}
-				return prevTime - 1;
-			});
+			const updatedTime = calculateRemainingTime();
+			setRemainingTime(updatedTime);
+			if (updatedTime <= 0) {
+				clearInterval(timer);
+				handleSubmit(); // Auto-submit when time is up
+			}
 		}, 1000);
-
 		return () => clearInterval(timer);
+	}, [startTime]);
+
+	// Disable keyboard shortcuts
+	useEffect(() => {
+		const disableKeyboard = (e) => e.preventDefault();
+		window.addEventListener("keydown", disableKeyboard);
+		return () => window.removeEventListener("keydown", disableKeyboard);
+	}, []);
+
+	// Prevent page navigation
+	useEffect(() => {
+		const handleBeforeUnload = (e) => {
+			e.preventDefault();
+			e.returnValue = "";
+		};
+		window.addEventListener("beforeunload", handleBeforeUnload);
+		return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+	}, []);
+
+	// Submit answers at intervals
+	useEffect(() => {
+		const interval = setInterval(() => {
+			handleIntervalSubmit();
+		}, 2 * 60 * 1000); // Every 2 minutes
+		return () => clearInterval(interval);
 	}, [answers]);
 
-	// Format time (MM:SS)
+	// Format time for display
 	const formatTime = (time) => {
 		const minutes = Math.floor(time / 60);
 		const seconds = time % 60;
@@ -115,170 +105,110 @@ export default function Exam({
 
 	// Handle option selection
 	const handleOptionSelect = (questionId, optionKey) => {
-		const updatedAnswers = { ...answers, [questionId]: optionKey };
-		setAnswers(updatedAnswers);
-		sessionStorage.setItem("quiz_answers", JSON.stringify(updatedAnswers));
+		setAnswers((prevAnswers) => ({
+			...prevAnswers,
+			[questionId]: optionKey,
+		}));
 	};
 
-	// Handle category selection
+	// Clear answer
+	const handleClearAnswer = (questionId) => {
+		setAnswers((prevAnswers) => {
+			const updatedAnswers = { ...prevAnswers };
+			delete updatedAnswers[questionId];
+			return updatedAnswers;
+		});
+	};
+
+	// Navigation
 	const handleCategorySelect = (index) => {
 		setCurrentCategoryIndex(index);
 		setCurrentQuestionIndex(0);
 	};
 
-	// Handle question selection
 	const handleQuestionSelect = (index) => {
 		setCurrentQuestionIndex(index);
 	};
 
-	// Handle navigation
 	const handleNext = () => {
 		if (currentQuestionIndex < currentCategory.questions.length - 1) {
-			setCurrentQuestionIndex(currentQuestionIndex + 1);
+			setCurrentQuestionIndex((prev) => prev + 1);
 		} else if (currentCategoryIndex < categories.length - 1) {
-			setCurrentCategoryIndex(currentCategoryIndex + 1);
+			setCurrentCategoryIndex((prev) => prev + 1);
 			setCurrentQuestionIndex(0);
 		}
 	};
 
 	const handlePrevious = () => {
 		if (currentQuestionIndex > 0) {
-			setCurrentQuestionIndex(currentQuestionIndex - 1);
+			setCurrentQuestionIndex((prev) => prev - 1);
 		} else if (currentCategoryIndex > 0) {
-			setCurrentCategoryIndex(currentCategoryIndex - 1);
+			setCurrentCategoryIndex((prev) => prev - 1);
 			setCurrentQuestionIndex(
 				categories[currentCategoryIndex - 1].questions.length - 1
 			);
 		}
 	};
 
-	// Trigger submission every 2 minutes
-	useEffect(() => {
-		// Explicitly set the answers before submission
-		setData("answers", answers);
-
-		const interval = setInterval(() => {
-			console.log("Auto-submitting after 2 minutes...");
-			handleIntervalSubmit();
-		}, 50 * 1000); // 5 minutes in milliseconds
-
-		return () => clearInterval(interval); // Cleanup interval on component unmount
-	}, [answers]);
-
-	// Function to get current time with microseconds in ISO format
-	const getCurrentTimeWithMicroseconds = () => {
-		const now = new Date();
-		const isoString = now.toISOString(); // Gets time in "2024-12-08T19:12:01.675Z" format
-		const microseconds =
-			now.getMilliseconds().toString().padStart(3, "0") + "000"; // Adds microseconds as "675000"
-		return isoString.replace("Z", `.${microseconds}Z`);
-	};
-
-	// Submit quiz
+	// Submit data
 	const handleIntervalSubmit = () => {
-		// Explicitly set the latest answers before submission
-		setData("answers", answers);
-
-		// Log the current time and data for debugging
-		const currentTime = getCurrentTimeWithMicroseconds();
-		console.log("Submitting Data:", {
-			student_uuid,
-			answers,
-			currentTime,
-		});
-
 		post(route("student.quiz.intervalSubmit"), {
-			data: { ...data, currentTime },
-			preserveState: true, // Prevent state reset
-			preserveScroll: true, // Maintain scroll position
-			onSuccess: () => {
-				console.log("Interval submission successful!");
-				console.log("Interval triggered at:", new Date().toISOString());
-			},
-			onError: (error) => {
-				console.error("Interval submission error:", error);
-			},
+			data,
+			preserveState: true,
+			preserveScroll: true,
 		});
 	};
 
-	// Submit quiz
 	const handleSubmit = () => {
-		console.log("Submitting Data:", {
-			student_uuid: student_uuid,
-			answers: answers,
-		});
-
 		post(route("student.quiz.submit"), {
 			data,
 			onSuccess: () => {
-				console.log("Submission Successful!");
 				sessionStorage.removeItem("quiz_answers");
-				sessionStorage.removeItem("quiz_timer");
-			},
-			onError: (error) => {
-				console.error("Submission Error:", error);
+				sessionStorage.removeItem("exam_start_time");
 			},
 		});
 	};
-
-	useEffect(() => {
-		const handleLogoutOnClose = async (event) => {
-			try {
-				// Optional: Prevent some refresh actions
-				event.preventDefault();
-				event.returnValue = "";
-
-				// Trigger the logout API
-				await axios.post(route("student.logout"));
-			} catch (error) {
-				console.error("Error logging out on browser close:", error);
-			}
-		};
-
-		window.addEventListener("beforeunload", handleLogoutOnClose);
-
-		return () => {
-			window.removeEventListener("beforeunload", handleLogoutOnClose);
-		};
-	}, []);
 
 	return (
 		<ExamScreenLayout>
 			<Head title="Instructions" />
-
-			<div className="grid grid-cols-1 md:grid-cols-1 gap-4 py-8 md:px-8 lg:grid-cols-12">
-				<div className="lg:col-span-8 sm:col-span-1">
-					<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-						<div className="p-6 text-gray-900">
-							<form className="quiz-container">
-								<div className="question-section">
-									<h3>
-										<strong>Question {currentQuestionIndex + 1}:</strong>{" "}
-									</h3>
-									<h2>{currentQuestion.question}</h2>
-									<h3 className="mt-4">
-										<strong>Options:</strong>{" "}
-									</h3>
-									<div className="lg:w-2/4 md:w-2/3">
-										{["A", "B", "C", "D"].map((key, index) => (
-											<SecondaryButton
-												key={index}
-												className={`flex w-full my-3 py-4 hover:bg-green-300 focus:bg-green-500 ${
-													answers[currentQuestion.id] === key
-														? " bg-green-400 text-green-950 "
-														: ""
-												}`}
-												onClick={() =>
-													handleOptionSelect(currentQuestion.id, key)
-												}
-											>
-												{String.fromCharCode(65 + index)}.{" "}
-												{currentQuestion[key]}
-											</SecondaryButton>
-										))}
-									</div>
+			<div className="grid grid-cols-1 lg:grid-cols-12 gap-4 py-8 md:px-8">
+				<div className="lg:col-span-8">
+					<div className="bg-white shadow-sm sm:rounded-lg overflow-hidden">
+						<div className="p-6">
+							<form>
+								<h3>
+									<strong>Question {currentQuestionIndex + 1}:</strong>
+								</h3>
+								<h2>{currentQuestion.question}</h2>
+								<h3 className="mt-4">Options:</h3>
+								<div className="lg:w-2/4 md:w-2/3">
+									{["A", "B", "C", "D"].map((key, index) => (
+										<SecondaryButton
+											key={index}
+											className={`flex w-full my-3 py-4 ${
+												answers[currentQuestion.id] === key
+													? "bg-green-400"
+													: "hover:bg-green-300"
+											}`}
+											onClick={() =>
+												handleOptionSelect(currentQuestion.id, key)
+											}
+										>
+											{key}. {currentQuestion[key]}
+										</SecondaryButton>
+									))}
 								</div>
-								<div className="flex py-5">
+								<div className="flex justify-start py-5">
+									<DangerButton
+										onClick={(e) => {
+											e.preventDefault();
+											handleClearAnswer(currentQuestion.id);
+										}}
+										className="bg-red-600 hover:bg-red-500 me-4"
+									>
+										Clear Answer
+									</DangerButton>
 									<PrimaryButton
 										onClick={handlePrevious}
 										disabled={
@@ -299,31 +229,32 @@ export default function Exam({
 									>
 										Next
 									</PrimaryButton>
-									<PrimaryButton
-										onClick={handleSubmit}
-										className="bg-green-700 hover:bg-green-600"
-									>
-										Submit
-									</PrimaryButton>
+									<div className="flex justify-end">
+										<SuccessButton
+											onClick={handleSubmit}
+											className="bg-green-700 hover:bg-green-600 py-3 text-sm"
+										>
+											Submit
+										</SuccessButton>
+									</div>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
+				{/* Sidebar for Categories and Timer */}
 				<div className="lg:col-span-4">
-					<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-						<div className="p-6 text-gray-900 border-b">
-							<div className="text-center">
-								<h2 className="text-lg font-bold">
-									Time Remaining:{" "}
-									<span className="text-red-600">
-										{formatTime(remainingTime)}
-									</span>
-								</h2>
-							</div>
+					<div className="bg-white shadow-sm sm:rounded-lg">
+						<div className="p-6 text-center border-b">
+							<h2 className="text-lg font-bold">
+								Time Remaining:{" "}
+								<span className="text-red-600">
+									{formatTime(remainingTime)}
+								</span>
+							</h2>
 						</div>
-						<div className="p-6 text-gray-900">
-							<div className="grid grid-cols-2 pb-6 gap-4">
+						<div className="p-6">
+							<div className="grid grid-cols-2 gap-4">
 								{categories.map((category, index) => (
 									<CategoryButton
 										key={index}
@@ -339,17 +270,17 @@ export default function Exam({
 								))}
 							</div>
 						</div>
-						<div className="p-6 text-gray-900 border-t">
-							<div className="grid grid-cols-5 gap-6 ">
+						<div className="p-6 border-t">
+							<div className="grid grid-cols-5 gap-6">
 								{currentCategory.questions.map((question, index) => (
 									<ExamButton
 										key={index}
 										className={`flex justify-center text-white ${
 											index === currentQuestionIndex
-												? " bg-fuchsia-900 focus:ring-0 rounded-full"
+												? " rounded-full bg-fuchsia-900"
 												: answers[question.id]
-												? " bg-green-500 rounded-lg"
-												: " bg-indigo-700 hover:bg-red-700 hover:rounded-md"
+												? "bg-green-500 rounded-lg"
+												: "bg-indigo-700 hover:bg-red-700 hover:rounded-md"
 										}`}
 										onClick={() => handleQuestionSelect(index)}
 									>

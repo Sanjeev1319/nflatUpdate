@@ -3,7 +3,7 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useForm } from "@inertiajs/react";
 
-export default function Instructions({ allowAttempt }) {
+export default function Instructions({ allowAttempt, retryAttempt }) {
 	const { data, setData, post, processing, errors, reset } = useForm({
 		terms: false,
 	});
@@ -48,9 +48,15 @@ export default function Instructions({ allowAttempt }) {
 											<InputError message={errors.terms} className="mt-2" />
 										</div>
 										<div className="text-center">
-											<PrimaryButton type="submit" className="mt-3">
-												Start Exam
-											</PrimaryButton>
+											{retryAttempt === true ? (
+												<PrimaryButton type="submit" className="mt-3">
+													Retry Attempt
+												</PrimaryButton>
+											) : (
+												<PrimaryButton type="submit" className="mt-3">
+													Start Exam
+												</PrimaryButton>
+											)}
 										</div>
 									</>
 								) : (

@@ -9,6 +9,7 @@ export default function Index({
 	allowAttempt,
 	error,
 	examComplete,
+	retryAttempt,
 }) {
 	return (
 		<ExamScreenLayout
@@ -48,7 +49,11 @@ export default function Index({
 			{/* Conditional rendering based on examComplete */}
 			<div className="mt-6">
 				{examComplete === null ? (
-					<Instructions studentData={studentData} allowAttempt={allowAttempt} />
+					<Instructions
+						studentData={studentData}
+						allowAttempt={allowAttempt}
+						retryAttempt={retryAttempt}
+					/>
 				) : examComplete === "yes" ? (
 					<ExamComplete />
 				) : (

@@ -67,7 +67,9 @@ export default function Welcome({ auth, success }) {
 				<div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white pb-10">
 					<header className="w-full py-5">
 						<div className="flex lg:col-start-2 lg:justify-center">
-							<Link href={route('home')}><ApplicationLogo /></Link>
+							<Link href={route("home")}>
+								<ApplicationLogo />
+							</Link>
 						</div>
 					</header>
 					<div className="min-h-10 bg-blue-900 w-full text-white flex items-center justify-center text-lg font-medium">
