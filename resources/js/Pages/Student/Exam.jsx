@@ -9,7 +9,7 @@ import { Head, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
 export default function Exam({ student_uuid, questions, retryAnswers }) {
-	console.log(retryAnswers);
+	// console.log(retryAnswers);
 
 	const { data, setData, post, processing } = useForm({
 		answers: "",
@@ -41,7 +41,7 @@ export default function Exam({ student_uuid, questions, retryAnswers }) {
 	const currentQuestion = currentCategory.questions[currentQuestionIndex];
 
 	// Calculate remaining time (in seconds) based on start time
-	const totalTimeInSeconds = (retryTime || timeLeft) * 60; // Retry time or initial time in seconds
+	const totalTimeInSeconds = 300; // Retry time or initial time in seconds
 	const calculateRemainingTime = () => {
 		const elapsedSeconds = Math.floor((new Date() - startTime) / 1000);
 		return Math.max(totalTimeInSeconds - elapsedSeconds, 0);

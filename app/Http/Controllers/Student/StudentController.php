@@ -90,6 +90,8 @@ class StudentController extends Controller
 			'terms.accepted' => 'You must accept the terms and conditions before starting the exam.',
 		]);
 
+		$retryAttempt = false;
+
 		// Retrieve general settings
 		$generalSettings = DB::table('general_settings')->get();
 		$examTimeSetting = $generalSettings->where('setting', 'exam_time')->first();
@@ -105,18 +107,18 @@ class StudentController extends Controller
 		// Create a JSON object for tracking exam attempts with start time
 		$attemptKey = $quizLog->attempt + 1;
 
-		// Decode existing exam_time if it exists, otherwise start with an empty array
-		$existingExamTime = $quizLog->exam_time ? json_decode($quizLog->exam_time, true) : [];
-		$countAttemptExamTimes = count($existingExamTime);
-		// Convert to Carbon instances
-		$examJsonEndTime = Carbon::parse($existingExamTime[$countAttemptExamTimes]['exam_end']);
-		$examJsonStartTime = Carbon::parse($existingExamTime[$countAttemptExamTimes]['start_time']);
+		// if($quizLog->submit_type == 1) {
+		// 	// Decode existing exam_time if it exists, otherwise start with an empty array
+		// 	$existingExamTime = $quizLog->exam_time ? json_decode($quizLog->exam_time, true) : [];
+		// 	// Convert to Carbon instances
+		// 	$examJsonEndTime = Carbon::parse($existingExamTime[$quizLog->attempt]['exam_end']);
+		// 	$examJsonStartTime = Carbon::parse($existingExamTime[$quizLog->attempt]['start_time']);
 
-		$remainingTime = $examJsonEndTime->diffInSeconds($examJsonStartTime);
+		// 	$attemptTime = round($examJsonEndTime->floatDiffInMinutes($examJsonStartTime));
+		// 	$remainingTime = $examTimeSetting->value - $attemptTime;
+		// 	dd($remainingTime);
+		// }
 
-		dd($remainingTime);
-		// dd($existingExamTime[$countAttemptExamTimes]['exam_end']);
-		// dd($existingExamTime[$countAttemptExamTimes]['start_time']);
 
 		// Add the new attempt's start time to the array
 		$existingExamTime[$attemptKey] = ['start_time' => $examStartTime];
@@ -166,6 +168,7 @@ class StudentController extends Controller
 			'student_uuid' => $studentUuid,
 			'exam_time' => $examTimeSetting->value,
 			'quiz_start' => true,
+
 		]);
 
 		// Redirect the student to the exam page
