@@ -8,7 +8,12 @@ import ExamScreenLayout from "@/Layouts/ExamScreenLayout";
 import { Head, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-export default function Exam({ student_uuid, questions, retryAnswers }) {
+export default function Exam({
+	student_uuid,
+	questions,
+	retryAnswers,
+	examTime,
+}) {
 	// console.log(retryAnswers);
 
 	const { data, setData, post, processing } = useForm({
@@ -40,11 +45,11 @@ export default function Exam({ student_uuid, questions, retryAnswers }) {
 	const currentCategory = categories[currentCategoryIndex];
 	const currentQuestion = currentCategory.questions[currentQuestionIndex];
 
-	// Calculate remaining time (in seconds) based on start time
-	const totalTimeInSeconds = 300; // Retry time or initial time in seconds
+	// Calculate remaining time (in minutes) based on start time
+	const totalTimeInMinutes = 3000; // Retry time or initial time in minutes
 	const calculateRemainingTime = () => {
-		const elapsedSeconds = Math.floor((new Date() - startTime) / 1000);
-		return Math.max(totalTimeInSeconds - elapsedSeconds, 0);
+		const elapsedMinutes = Math.floor((new Date() - startTime) / 1000);
+		return Math.max(totalTimeInMinutes - elapsedMinutes, 0);
 	};
 
 	// Real-time timer

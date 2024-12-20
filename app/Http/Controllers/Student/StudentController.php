@@ -107,18 +107,21 @@ class StudentController extends Controller
 		// Create a JSON object for tracking exam attempts with start time
 		$attemptKey = $quizLog->attempt + 1;
 
-		// if($quizLog->submit_type == 1) {
-		// 	// Decode existing exam_time if it exists, otherwise start with an empty array
-		// 	$existingExamTime = $quizLog->exam_time ? json_decode($quizLog->exam_time, true) : [];
-		// 	// Convert to Carbon instances
-		// 	$examJsonEndTime = Carbon::parse($existingExamTime[$quizLog->attempt]['exam_end']);
-		// 	$examJsonStartTime = Carbon::parse($existingExamTime[$quizLog->attempt]['start_time']);
+		// Decode existing exam_time if it exists, otherwise start with an empty array
+		$existingExamTime = $quizLog->exam_time ? json_decode($quizLog->exam_time, true) : [];
 
-		// 	$attemptTime = round($examJsonEndTime->floatDiffInMinutes($examJsonStartTime));
-		// 	$remainingTime = $examTimeSetting->value - $attemptTime;
-		// 	dd($remainingTime);
-		// }
+		if($quizLog->submit_type == 1) {
 
+			// Convert to Carbon instances
+			$examJsonEndTime = Carbon::parse($existingExamTime[$quizLog->attempt]['exam_end']);
+			$examJsonStartTime = Carbon::parse($existingExamTime[$quizLog->attempt]['start_time']);
+
+			$attemptTime = round($examJsonEndTime->floatDiffInMinutes($examJsonStartTime));
+			$remainingTime = $examTimeSetting->value - $attemptTime;
+			dd($remainingTime);
+		}
+
+			// dd($nflatCategory);
 
 		// Add the new attempt's start time to the array
 		$existingExamTime[$attemptKey] = ['start_time' => $examStartTime];
@@ -161,6 +164,7 @@ class StudentController extends Controller
 				'exam_time' => $examTimeArray,
 			]);
 		}
+
 
 		// Store necessary exam data in the session
 		Session::put([
