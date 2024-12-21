@@ -55,30 +55,33 @@ class SchoolRegisterController extends Controller
 			'school_board' => 'required|string|max:255',
 		]);
 
-		if($request->school_board === 'Other') {
+		if ($request->school_board === 'Other') {
 			$request->validate([
 				'school_board_2' => 'required|string|max:255',
 			]);
 			$school_board = $request->school_board_2;
-		};
+		}
+		;
 
 		// Generate a random 8-character alphanumeric password
 		$randomPassword = str::random(8);
 
 		// generate a new uuid
 		// Fetch the last student with UUID
-		$lastStudent = School::latest('school_uuid')->first();
-		$lastNumber = $lastStudent ? (int) substr($lastStudent->school_uuid, 8) : 1000;  // Default to 1000 if no student exists
+		$lastSchool = School::latest('school_uuid')->first();
+		$lastNumber = $lastSchool ? (int) substr($lastSchool->school_uuid, 8) : 1000;  // Default to 1000 if no student exists
 		// Increment the number
 		$newNumber = $lastNumber + 1;
-
-		// dd($newNumber);
 
 		$region = DB::table('pincodes')->where('state', $request->school_state)->first();
 		$regionSubStr = strtoupper(substr($region->region, 0, 3));
 
 		$school_uuid = strtoupper($regionSubStr . substr($request->school_state, 0, 2) . substr($request->school_district, 0, 3) . $newNumber);
 
+		if (School::where('school_uuid', $school_uuid)->exists()) {
+			Log::info('FOUND DUPLICATE ENTRY: ' . $school_uuid);
+			return back()->with(['error' => 'Students registered successfully!']);
+		}
 
 		$school_name = $request->school_name;
 		$school_email = $request->school_email;
@@ -108,7 +111,7 @@ class SchoolRegisterController extends Controller
 		]);
 
 
-		Log::info($school_name." : ". $school_uuid ." : " .$school_email . " : ". $randomPassword);
+		Log::info($school_name . " : " . $school_uuid . " : " . $school_email . " : " . $randomPassword);
 
 		// Send confirmation email to the school email
 		Mail::to($school_email)->send(new SchoolRegistrationMail($school_name, $school_email, $randomPassword, $school_uuid));

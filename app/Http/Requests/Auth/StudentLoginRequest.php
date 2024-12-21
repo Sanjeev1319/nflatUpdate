@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Session;
 
 class StudentLoginRequest extends FormRequest
 {
@@ -46,6 +47,7 @@ class StudentLoginRequest extends FormRequest
 		$this->ensureIsNotRateLimited();
 
 		$student = Student::where('student_uuid', $this->input('student_uuid'))->first();
+
 		if (!$student || $this->input('password') !== $student->password) {
 			RateLimiter::hit($this->throttleKey());
 			throw ValidationException::withMessages([
@@ -57,15 +59,14 @@ class StudentLoginRequest extends FormRequest
 			'last_login' => Carbon::now('Asia/Kolkata')
 		]);
 
-
 		// Create a quiz log record for student with student UUID or leave if exist
 		DB::table('quiz_logs')->updateOrInsert(['student_uuid' => $this->input('student_uuid')], ['student_uuid' => $this->input('student_uuid')]);
-
 
 		// Log the student in
 		Auth::guard('student')->login($student);
 
 		RateLimiter::clear($this->throttleKey());
+
 	}
 
 	/**
@@ -75,7 +76,7 @@ class StudentLoginRequest extends FormRequest
 	 */
 	public function ensureIsNotRateLimited(): void
 	{
-		if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+		if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
 			return;
 		}
 

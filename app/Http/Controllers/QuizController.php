@@ -22,7 +22,9 @@ class QuizController extends Controller
 		$final_submit = 2;
 
 
-		$quiz_log_query = DB::table("quiz_logs")->where('student_uuid', $student_uuid)->first();
+		$quiz_log_query = DB::table("quiz_logs")
+			->where('student_uuid', $student_uuid)
+			->first();
 		$getAttempt = $quiz_log_query->attempt;
 		$getExamJson = json_decode($quiz_log_query->exam_time, true);
 
@@ -44,6 +46,7 @@ class QuizController extends Controller
 		Session::forget("student_uuid");
 		Session::forget("exam_time");
 		Session::forget("quiz_start");
+		Session::forget("exam_in_progress");
 
 		return redirect()->route("student.index");
 	}

@@ -25,9 +25,10 @@ class StudentController extends Controller
 
 		$exam_complete = null;
 
-		if (Session::has('quiz_start')) {
+		if (session('exam_in_progress')) {
 			return redirect()->route('student.startExam');
-		};
+		}
+		;
 
 		$allowAttempt = true;
 		$retryAttempt = false;
@@ -48,14 +49,16 @@ class StudentController extends Controller
 		if ($quiz_logs !== null) {
 			if ($quiz_logs->attempt >= $maxAttempts) {
 				$allowAttempt = false;
-			};
-		};
+			}
+			;
+		}
+		;
 
 		if ($quiz_logs->submit_type == 2) {
 			$exam_complete = 'yes';
 		}
 
-		if($quiz_logs->submit_type == 1) {
+		if ($quiz_logs->submit_type == 1) {
 			$retryAttempt = true;
 		}
 
@@ -110,25 +113,28 @@ class StudentController extends Controller
 		// Decode existing exam_time if it exists, otherwise start with an empty array
 		$existingExamTime = $quizLog->exam_time ? json_decode($quizLog->exam_time, true) : [];
 
-		if($quizLog->submit_type == 1) {
+		if ($quizLog->submit_type == 1) {
 
 			// Convert to Carbon instances
 			$examJsonEndTime = Carbon::parse($existingExamTime[$quizLog->attempt]['exam_end']);
 			$examJsonStartTime = Carbon::parse($existingExamTime[$quizLog->attempt]['start_time']);
 
-			$attemptTime = round($examJsonEndTime->floatDiffInMinutes($examJsonStartTime));
-			$remainingTime = $examTimeSetting->value - $attemptTime;
-			dd($remainingTime);
+			$attemptTime = round($examJsonEndTime->floatDiffInSeconds($examJsonStartTime));
+			$finalExamTime = $examTimeSetting->value + $attemptTime;
+
+			$retryAnswers = json_decode(json_encode($quizLog->answers), true);
+
+		} else {
+			$finalExamTime = $examTimeSetting->value;
 		}
 
-			// dd($nflatCategory);
 
 		// Add the new attempt's start time to the array
 		$existingExamTime[$attemptKey] = ['start_time' => $examStartTime];
 
 		// Encode the updated array back to JSON
 		$examTimeArray = json_encode($existingExamTime);
-
+		// dd($examTimeArray . $retryAnswers);
 		if (is_null($quizLog->questions)) {
 			// Define categories and prepare questions for the quiz
 			$categories = ['General', 'Banking', 'Insurance', 'Investment', 'Pension'];
@@ -170,10 +176,13 @@ class StudentController extends Controller
 		Session::put([
 			'exam_start_time' => $examStartTime,
 			'student_uuid' => $studentUuid,
-			'exam_time' => $examTimeSetting->value,
+			'exam_time' => $finalExamTime,
 			'quiz_start' => true,
-
+			'answers' => $retryAnswers ?? null,
 		]);
+
+		// Ensure if the user closes the tab, they are redirected to the home page
+		session(['exam_in_progress' => true]);
 
 		// Redirect the student to the exam page
 		return redirect()->route('student.startExam');
@@ -185,22 +194,30 @@ class StudentController extends Controller
 	 */
 	public function startExam()
 	{
+		if (!session('exam_in_progress')) {
+			return redirect()->route('student.index');
+		}
 
+		$student_details = Student::where("student_uuid", Auth::guard('student')->user()->student_uuid)
+			->first();
+
+		// dd($student_details);
 		$retryTime = null;
 		$retryAnswers = null;
+		if (Session::has('answers')) {
+			$retryAnswers = Session::get('answers');
+		}
+
+		// dd($retryAnswers);
 
 		$exam_session = Session::get('exam_start_time');
 		// $exam_time = Session::get('exam_time');
 		$student_uuid = Auth::guard('student')->user()->student_uuid;
 		$session_student_uuid = Session::get('student_uuid');
 
+
 		$exam_time = Session::get('exam_time');
 		$quizStartTime = Carbon::parse(Session::get('exam_start_time'));
-
-		$timeElapsed = now()->diffInMinutes($quizStartTime);
-		$timeLeft = max($exam_time - $timeElapsed, 0);
-
-		$minutes = $timeLeft % 60;
 
 		// queries
 		$setting_query = DB::table('general_settings')->get();
@@ -225,10 +242,10 @@ class StudentController extends Controller
 		$questions = $quiz_log_query->questions;
 
 		return Inertia::render('Student/Exam', [
+			'studentData' => new StudentResource($student_details),
 			'questions' => json_decode($questions),
-			'timeLeft' => $minutes,
+			'examTime' => $exam_time,
 			'student_uuid' => $student_uuid,
-			'retryTime' => $retryTime,
 			'retryAnswers' => $retryAnswers,
 		]);
 	}

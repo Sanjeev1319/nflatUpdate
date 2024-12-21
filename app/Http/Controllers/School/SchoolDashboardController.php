@@ -143,8 +143,8 @@ class SchoolDashboardController extends Controller
 
 
 	/*
-		 * Import Method for excel bulk registration of students
-		 */
+	 * Import Method for excel bulk registration of students
+	 */
 	public function import(Request $request)
 	{
 		$request->validate([
@@ -309,14 +309,15 @@ class SchoolDashboardController extends Controller
 	 * View School Profile
 	 *
 	 */
-	public function profileView() {
+	public function profileView()
+	{
 
 		$school_uuid = auth::guard('school')->user()->school_uuid;
 
 		$school_data = School::where('school_uuid', $school_uuid)->first();
 
 		return Inertia::render('School/Profile', [
-			'school'=> $school_data,
+			'school' => $school_data,
 		]);
 	}
 
@@ -325,14 +326,15 @@ class SchoolDashboardController extends Controller
 	 * View School Profile in edit mode
 	 *
 	 */
-	public function profileEdit(Request $request) {
+	public function profileEdit(Request $request)
+	{
 
 		$school_uuid = auth::guard('school')->user()->school_uuid;
 
 		$school_data = School::where('school_uuid', $school_uuid)->first();
 
 		return Inertia::render('School/Edit', [
-			'school'=> $school_data,
+			'school' => $school_data,
 		]);
 	}
 
@@ -343,7 +345,8 @@ class SchoolDashboardController extends Controller
 	 *
 	 */
 
-	public function profileEditStore(Request $request) {
+	public function profileEditStore(Request $request)
+	{
 		// dd($request->toArray());
 		$school_uuid = $request->school_uuid;
 		$school_name = $request->school_name;
@@ -379,7 +382,7 @@ class SchoolDashboardController extends Controller
 		Mail::to($school_email)->cc($unique_emails)->send(new SchoolUpdateMail($school_name, $school_uuid));
 
 		return redirect()->route('school.profileView')->with([
-			'success'=> 'School details successfully!',
+			'success' => 'School details successfully!',
 		]);
 	}
 
@@ -391,7 +394,7 @@ class SchoolDashboardController extends Controller
 	public function studentExport(Request $request)
 	{
 		// Retrieve query parameters (e.g., date range or specific columns)
-    $filters = $request->all();
+		$filters = $request->all();
 
 		return Excel::download(new StudentsExport($filters), 'students.xlsx');
 

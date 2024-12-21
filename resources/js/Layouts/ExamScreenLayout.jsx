@@ -3,37 +3,52 @@ import { Link, usePage } from "@inertiajs/react";
 
 export default function ExamScreenLayout({ header, children, pageScreen }) {
 	const user = usePage().props.auth.user;
+	const { url } = usePage(); // Access the current URL
+
+	// Define the array of URLs where the logout button should not appear
+	const noLogoutUrls = ['/take-a-test/start', '/another-url', '/some-other-url'];
+
+	// Check if the current URL matches any of the no-logout URLs
+	const isNoLogoutPage = noLogoutUrls.some((noLogoutUrl) => url.includes(noLogoutUrl));
+
+	// Determine how many columns `pageScreen` should span based on the URL
+	const pageScreenColSpan = isNoLogoutPage ? 'col-span-5' : 'col-span-2 md:col-span-4 mx-auto justify-center';
 
 	return (
 		<div className="min-h-screen bg-gray-100">
 			<nav className="border-b border-gray-100 bg-white">
 				<div className="mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="grid grid-cols-2 md:grid-cols-3 py-4 items-center">
+					<div className="grid grid-cols-2 md:grid-cols-6 py-4 items-center gap-6">
 						<div className="text-center w-full">
-							<div className="flex items-center">
+							<div className="flex items-center border">
 								<Link href={route("student.index")}>
 									<img
 										src="/storage/ncfe_logos/Homepage_Top_logo.png"
-										class="w-4/6"
+									// className="w-4/6"
 									/>
 								</Link>
 							</div>
 						</div>
 
-						<div className="sm:-my-px mx-auto w-full items-center justify-center col-span-2 md:col-span-1 hidden md:flex">
+						<div className={`sm:-my-px w-full items-center ${pageScreenColSpan} hidden md:flex`}>
 							{pageScreen}
 						</div>
-						<div className="sm:-my-px flex items-center justify-end">
-							<div>
-								<Link
-									href={route("student.logout")}
-									className="flex items-center space-x-2 text-red-500 font-bold"
-								>
-									<span>Log Out</span>
-									<ArrowRightStartOnRectangleIcon className="h-6" />
-								</Link>
+						{!isNoLogoutPage && (
+							<div className="sm:-my-px flex items-center justify-end">
+								{/* Conditionally render logout button */}
+								{!noLogoutUrls.includes(url) && (
+									<div className="sm:-my-px flex items-center justify-end">
+										<Link
+											href={route("student.logout")}
+											className="flex items-center space-x-2 text-red-500 font-bold"
+										>
+											<span>Log Out</span>
+											<ArrowRightStartOnRectangleIcon className="h-6" />
+										</Link>
+									</div>
+								)}
 							</div>
-						</div>
+						)}
 					</div>
 				</div>
 			</nav>

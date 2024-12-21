@@ -7,7 +7,7 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-export default function Register() {
+export default function Register({ error }) {
 	const { data, setData, post, processing, errors, reset, setError } = useForm({
 		school_name: "",
 		school_email: "",
@@ -242,10 +242,31 @@ export default function Register() {
 	return (
 		<GuestLayout>
 			<Head title="Register School" />
+			{error && (
+				<div className="pt-12">
+					<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+						<div className="overflow-hidden shadow-sm sm:rounded-lg">
+							<div className="bg-indigo-900 text-center py-4 lg:px-4">
+								<div
+									className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
+									role="alert"
+								>
+									<span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">
+										New
+									</span>
+									<span className="font-semibold mr-2 text-left flex-auto">
+										{error}
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 			<div className="lg:px-8 py-10 sm:px-6 lg:max-w-5xl sm:w-full mx-auto">
 				<form
 					onSubmit={submit}
-					// className="md:grid-cols-3 gap-y-8 gap-x-8 grid-cols-1 grid"
+				// className="md:grid-cols-3 gap-y-8 gap-x-8 grid-cols-1 grid"
 				>
 					{/* <div className="sm:px-0 px-4">School Details</div> */}
 					<div className="md:col-span-2 sm:rounded-lg ring-gray-900/5 ring-1 ring-offset-1 bg-white">
