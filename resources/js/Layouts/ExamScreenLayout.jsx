@@ -20,7 +20,7 @@ export default function ExamScreenLayout({ header, children, pageScreen }) {
 				<div className="mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="grid grid-cols-2 md:grid-cols-6 py-4 items-center gap-6">
 						<div className="text-center w-full">
-							<div className="flex items-center border">
+							<div className="flex items-center">
 								<Link href={route("student.index")}>
 									<img
 										src="/storage/ncfe_logos/Homepage_Top_logo.png"

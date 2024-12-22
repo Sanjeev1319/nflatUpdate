@@ -19,66 +19,74 @@ export default function StudentDetails({ studentData }) {
 									<dl>
 										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
+												Student ID:
+											</dt>
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
+												{studentData.data.student_uuid}
+											</dd>
+										</div>
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
+											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Student Name:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.student_name}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Class:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.student_class} /{" "}
 												{studentData.data.student_section}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												NFLAT Category:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.nflat_category}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Date of Birth:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.date_of_birth}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Gender:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.gender}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Parent Name:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.parent_name}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Parent Email ID:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.parent_email_id}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Parent Mobile Number:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.parent_mobile_number}
 											</dd>
 										</div>
@@ -98,19 +106,27 @@ export default function StudentDetails({ studentData }) {
 								</div>
 								<div className="border-t border-gray-200 pb-4">
 									<dl>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
+											<dt className="text-gray-900 font-medium text-sm leading-5">
+												School ID:
+											</dt>
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
+												{studentData.data.school_uuid.school_uuid}
+											</dd>
+										</div>
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												School Name:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.school_uuid.school_name}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												School Address:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.school_uuid.school_address_line_1},{" "}
 												{studentData.data.school_uuid.school_area}
 												<br />
@@ -120,19 +136,19 @@ export default function StudentDetails({ studentData }) {
 												<br />
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Incharge Name:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.school_uuid.incharge_name}
 											</dd>
 										</div>
-										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-4 px-4 hover:bg-green-50">
+										<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
 											<dt className="text-gray-900 font-medium text-sm leading-5">
 												Principal Name:
 											</dt>
-											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1">
+											<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 												{studentData.data.school_uuid.principal_name}
 											</dd>
 										</div>

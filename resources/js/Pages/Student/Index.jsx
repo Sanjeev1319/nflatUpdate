@@ -47,7 +47,7 @@ export default function Index({
 			<StudentDetails studentData={studentData} />
 
 			{/* Conditional rendering based on examComplete */}
-			<div className="mt-6">
+			<div className="">
 				{examComplete === null ? (
 					<Instructions
 						studentData={studentData}

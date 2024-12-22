@@ -220,18 +220,20 @@ export default function Exam({
 							<h3 className="mt-4">Options:</h3>
 							<div className="lg:w-2/4 md:w-2/3">
 								{["A", "B", "C", "D"].map((key, index) => (
-									<SecondaryButton
-										key={index}
-										className={`flex w-full my-3 py-4 ${answers[currentQuestion.id] === key
-											? "bg-green-400"
-											: "hover:bg-green-300"
-											}`}
-										onClick={() =>
-											handleOptionSelect(currentQuestion.id, key)
-										}
-									>
-										{key}. {currentQuestion[key]}
-									</SecondaryButton>
+									currentQuestion[key] && ( // Check if the value of the key is not null
+										<SecondaryButton
+											key={index}
+											className={`flex w-full my-3 py-4 ${answers[currentQuestion.id] === key
+												? "bg-green-400"
+												: "hover:bg-green-300"
+												}`}
+											onClick={() =>
+												handleOptionSelect(currentQuestion.id, key)
+											}
+										>
+											{key}. {currentQuestion[key]}
+										</SecondaryButton>
+									)
 								))}
 							</div>
 							<div className="flex justify-start py-5">
