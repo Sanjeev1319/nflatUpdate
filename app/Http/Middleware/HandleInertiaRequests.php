@@ -42,6 +42,8 @@ class HandleInertiaRequests extends Middleware
 			$user = Auth::guard('school')->user();
 		} elseif (Auth::guard('student')->check()) {
 			$user = Auth::guard('student')->user();
+		} elseif (Auth::guard('admin')->check()) {
+			$user = Auth::guard('admin')->user();
 		}
 
 		return [

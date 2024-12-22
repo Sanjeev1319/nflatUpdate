@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class GuestSchoolMiddleware
+class AuthAdminMiddleware
 {
 	/**
 	 * Handle an incoming request.
@@ -16,8 +16,8 @@ class GuestSchoolMiddleware
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-		if (Auth::guard('school')->check()) {
-			return redirect()->route('school.dashboard'); // Replace with your dashboard route
+		if (!Auth::guard('admin')->check()) {
+			return redirect(route("cpanel.login"));
 		}
 
 		return $next($request);

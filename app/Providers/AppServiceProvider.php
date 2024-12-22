@@ -8,22 +8,22 @@ use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
+	/**
+	 * Register any application services.
+	 */
+	public function register(): void
+	{
+		//
+	}
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        Vite::prefetch(concurrency: 3);
-				Inertia::share([
-						'csrf_token' => csrf_token(),
-				]);
-    }
+	/**
+	 * Bootstrap any application services.
+	 */
+	public function boot(): void
+	{
+		Vite::prefetch(concurrency: 3);
+		Inertia::share([
+			'csrf_token' => csrf_token(),
+		]);
+	}
 }

@@ -39,3 +39,4 @@ Route::get('/fetch-pincode-details', [PincodeController::class, 'getPincodeDetai
 // require __DIR__.'/auth.php';
 require __DIR__ . '/school.php';
 require __DIR__ . '/student.php';
+require __DIR__ . '/admin.php';

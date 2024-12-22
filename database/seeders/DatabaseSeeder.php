@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\Quizbank;
 use App\Models\Quizquestions;
 use App\Models\User;
@@ -18,20 +19,21 @@ class DatabaseSeeder extends Seeder
 		// User::factory(10)->create();
 
 		// Calling the NFLATCategorySeeder
-		$this->call(NFLATCategorySeeder::class);
+		// $this->call(NFLATCategorySeeder::class);
 
-		// calling School Seeder
-		$this->call(SchoolSeeder::class);
+		// // calling School Seeder
+		// $this->call(SchoolSeeder::class);
 
-		// calling general Settings seeder
-		$this->call(generalSettingSeeder::class);
+		// // calling general Settings seeder
+		// $this->call(generalSettingSeeder::class);
 
-		// User::factory()->create([
-		//     'name' => 'Test User',
-		//     'email' => 'test@example.com',
+		// Admin::factory()->create([
+		// 	'username' => 'Test User',
+		// 	'email' => 'test@example.com',
+		// 	'password' => 'password',
 		// ]);
 
-		Quizbank::factory()->count(3)->create();
-		Quizquestions::factory()->count(500)->create();
+		// Quizbank::factory()->count(3)->create();
+		// Quizquestions::factory()->count(500)->create();
 	}
 }
