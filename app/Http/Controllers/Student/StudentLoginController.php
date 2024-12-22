@@ -33,6 +33,26 @@ class StudentLoginController extends Controller
 
 		$request->session()->regenerate();
 
+		// latest session id
+		$session_id = Session::getId();
+
+		// student_id
+		$student_uuid = Auth::guard('student')->user()->student_uuid;
+
+		$getOldSession = DB::table('singleLogin')
+			->where('user_id', $student_uuid)
+			->first();
+
+		// dd($getOldSession);
+		if ($getOldSession) {
+			$oldSessionId = $getOldSession->session;
+			DB::table('sessions')->where('id', $oldSessionId)->delete();
+			DB::table('singleLogin')->where('session', $oldSessionId)->delete();
+		}
+
+		DB::table('singleLogin')
+			->insert(['session' => $session_id, 'user_id' => $student_uuid]);
+
 		return redirect()->intended(route('student.index'));
 	}
 
@@ -41,6 +61,20 @@ class StudentLoginController extends Controller
 	 */
 	public function destroy(Request $request): RedirectResponse
 	{
+		// student_id
+		$student_uuid = Auth::guard('student')->user()->student_uuid;
+
+		$getOldSession = DB::table('singleLogin')
+			->where('user_id', $student_uuid)
+			->first();
+
+		// dd($getOldSession);
+		if ($getOldSession) {
+			$oldSessionId = $getOldSession->session;
+			DB::table('sessions')->where('id', $oldSessionId)->delete();
+			DB::table('singleLogin')->where('session', $oldSessionId)->delete();
+		}
+
 		Auth::guard('student')->logout();
 
 		$request->session()->invalidate();

@@ -7,7 +7,9 @@ use App\Http\Requests\Auth\SchoolLoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,6 +35,26 @@ class SchoolLoginController extends Controller
 
 		$request->session()->regenerate();
 
+		// latest session id
+		$session_id = Session::getId();
+
+		// school_uuid
+		$school_uuid = Auth::guard('school')->user()->school_uuid;
+
+		$getOldSession = DB::table('singleLogin')
+			->where('user_id', $school_uuid)
+			->first();
+
+		// dd($getOldSession);
+		if ($getOldSession) {
+			$oldSessionId = $getOldSession->session;
+			DB::table('sessions')->where('id', $oldSessionId)->delete();
+			DB::table('singleLogin')->where('session', $oldSessionId)->delete();
+		}
+
+		DB::table('singleLogin')
+			->insert(['session' => $session_id, 'user_id' => $school_uuid]);
+
 		return redirect()->intended(route('school.dashboard', absolute: false));
 	}
 
@@ -41,6 +63,20 @@ class SchoolLoginController extends Controller
 	 */
 	public function destroy(Request $request): RedirectResponse
 	{
+		// school_uuid
+		$school_uuid = Auth::guard('school')->user()->school_uuid;
+
+		$getOldSession = DB::table('singleLogin')
+			->where('user_id', $school_uuid)
+			->first();
+
+		// dd($getOldSession);
+		if ($getOldSession) {
+			$oldSessionId = $getOldSession->session;
+			DB::table('sessions')->where('id', $oldSessionId)->delete();
+			DB::table('singleLogin')->where('session', $oldSessionId)->delete();
+		}
+
 		Auth::guard('school')->logout();
 
 		$request->session()->invalidate();

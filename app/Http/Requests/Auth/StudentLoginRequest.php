@@ -9,9 +9,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Session;
 
 class StudentLoginRequest extends FormRequest
 {
@@ -61,7 +61,7 @@ class StudentLoginRequest extends FormRequest
 
 		// Create a quiz log record for student with student UUID or leave if exist
 		DB::table('quiz_logs')->updateOrInsert(['student_uuid' => $this->input('student_uuid')], ['student_uuid' => $this->input('student_uuid')]);
-
+		// dd(Session::getId());
 		// Log the student in
 		Auth::guard('student')->login($student);
 

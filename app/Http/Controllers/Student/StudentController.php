@@ -22,7 +22,6 @@ class StudentController extends Controller
 	 */
 	public function studentInstruction(Student $student)
 	{
-
 		$exam_complete = null;
 
 		if (session('exam_in_progress')) {

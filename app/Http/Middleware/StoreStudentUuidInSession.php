@@ -9,18 +9,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class StoreStudentUuidInSession
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
-    {
-      if (Auth::guard('student')->check()) {
-				$student = Auth::guard('student')->user();
-				session(['user_id' => $student->student_uuid]);
-			}
+	/**
+	 * Handle an incoming request.
+	 *
+	 * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+	 */
+	public function handle(Request $request, Closure $next): Response
+	{
+		if (Auth::guard('student')->check()) {
+			$student = Auth::guard('student')->user();
+			dd($student);
+			session(['user_id' => $student->student_uuid]);
+		}
 
-			return $next($request);
-    }
+		return $next($request);
+	}
 }

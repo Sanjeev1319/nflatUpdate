@@ -17,8 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
 			\Illuminate\Session\Middleware\AuthenticateSession::class, // Add this line
 		]);
 		$middleware->alias([
-        'session' => \Illuminate\Session\Middleware\AuthenticateSession::class, // Add this line
-    ]);
+			'logOutOtherDevice' => Illuminate\Session\Middleware\AuthenticateSession::class, // Add this line
+		]);
 
 		//
 	})
