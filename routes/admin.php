@@ -28,4 +28,11 @@ Route::middleware(AuthAdminMiddleware::class)
 		Route::get('/dashboard', [AdminController::class, 'dashboard'])
 			->name('dashboard');
 
+		Route::get('/school', [AdminController::class, 'school'])
+			->name('school');
+
+		Route::get('schoolExport', [AdminController::class, 'schoolExport'])
+			->name('schoolExport');
+
+
 	});

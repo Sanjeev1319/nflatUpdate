@@ -18,7 +18,6 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;  // Make sure you import the Excel facade correctly
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Excel as ExcelExcel;
 
 class SchoolDashboardController extends Controller
 {

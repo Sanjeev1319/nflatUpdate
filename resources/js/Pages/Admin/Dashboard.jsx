@@ -1,5 +1,4 @@
 import AdminAuthLayout from "@/Layouts/AdminAuthLayout";
-import { EyeIcon } from "@heroicons/react/24/solid";
 import { Head, Link } from "@inertiajs/react";
 
 export default function Dashboard({ success, links, data }) {
@@ -53,7 +52,7 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", { category: "Junior" })}
+											href={route("cpanel.school")}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
 										>
 											View All

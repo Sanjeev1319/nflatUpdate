@@ -5,7 +5,7 @@ import {
 import { Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-export default function Pagination({ links, count }) {
+export default function AdminPagination({ links, count }) {
 	const [page, setPage] = useState(1); // Default to page 1
 	const [startIndex, setStartIndex] = useState(1);
 	const [endIndex, setEndIndex] = useState(20);
@@ -54,7 +54,7 @@ export default function Pagination({ links, count }) {
 								className={
 									"font-medium leading-5 pt-4 border-transparent border-t-2 items-center inline-flex px-4 " +
 									(link.active
-										? " text-indigo-700 font-semibold border-t-indigo-700 border-t-2 "
+										? " text-indigo-700 font-semibold border-t-2 border-t-indigo-700 "
 										: " text-[#6b7280] ") +
 									(!link.url
 										? "!text-gray-500 cursor-not-allowed "

@@ -34,24 +34,7 @@ export default function AdminAuthLayout({ header, children }) {
 								>
 									Dashboard
 								</NavLink>
-								<NavLink
-									href={route("school.studentRegister")}
-									active={route().current("school.studentRegister")}
-								>
-									Student Register
-								</NavLink>
-								<NavLink
-									href={route("school.studentBulkRegister")}
-									active={route().current("school.studentBulkRegister")}
-								>
-									Student Bulk Register
-								</NavLink>
-								<NavLink
-									href={route("school.studentList")}
-									active={route().current("school.studentList")}
-								>
-									Student List
-								</NavLink>
+
 							</div>
 						</div>
 
@@ -151,24 +134,6 @@ export default function AdminAuthLayout({ header, children }) {
 							active={route().current("cpanel.dashboard")}
 						>
 							Dashboard
-						</ResponsiveNavLink>
-						<ResponsiveNavLink
-							href={route("school.studentRegister")}
-							active={route().current("school.studentRegister")}
-						>
-							Student Register
-						</ResponsiveNavLink>
-						<ResponsiveNavLink
-							href={route("school.studentBulkRegister")}
-							active={route().current("school.studentBulkRegister")}
-						>
-							Student Bulk Register
-						</ResponsiveNavLink>
-						<ResponsiveNavLink
-							href={route("school.studentList")}
-							active={route().current("school.studentList")}
-						>
-							Student List
 						</ResponsiveNavLink>
 					</div>
 
