@@ -25,7 +25,7 @@ Route::middleware(AuthAdminMiddleware::class)
 		Route::post('logout', [AdminLoginController::class, 'destroy'])
 			->name('logout');
 
-		Route::get('/dashboard', [AdminController::class, 'dashboard'])
+		Route::get('/', [AdminController::class, 'dashboard'])
 			->name('dashboard');
 
 		Route::get('/school', [AdminController::class, 'school'])
@@ -34,5 +34,7 @@ Route::middleware(AuthAdminMiddleware::class)
 		Route::get('schoolExport', [AdminController::class, 'schoolExport'])
 			->name('schoolExport');
 
+		Route::get('/school/{uuid}', [AdminController::class, 'schoolView'])
+			->name('schoolView');
 
 	});

@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\adminSchoolExport;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AdminStudentResource;
+use App\Http\Resources\SchoolResource;
+use App\Http\Resources\StudentListResource;
 use App\Models\Pincode;
 use App\Models\School;
 use App\Models\Student;
@@ -85,6 +88,12 @@ class AdminController extends Controller
 
 		$schoolList = $schoolQuery->paginate(20)->appends(request()->query());
 
+		// Encrypt school_uuid for each school
+		$schoolList->getCollection()->transform(function ($school) {
+			$school->encrypted_uuid = base64_encode($school->school_uuid);
+			return $school;
+		});
+
 
 		$statesList = Pincode::select('state')->distinct()->orderBy('state')->pluck('state');
 
@@ -92,7 +101,7 @@ class AdminController extends Controller
 			'schoolList' => $schoolList,
 		];
 
-		return Inertia::render('Admin/School', [
+		return Inertia::render('Admin/School/Index', [
 			'school' => $schoolDataJson,
 			'statesList' => $statesList,
 			'queryParams' => request()->query() ?: null,
@@ -110,5 +119,29 @@ class AdminController extends Controller
 		$filters = $request->all();
 
 		return Excel::download(new adminSchoolExport($filters), 'schools.xlsx');
+	}
+
+	/**
+	 *
+	 * View the individual School and their statistics
+	 *
+	 */
+	public function schoolView($uuid)
+	{
+
+		// Decrypt the school UUID
+		$decryptedUuid = base64_decode($uuid);
+
+		// Fetch the school details using the decrypted UUID
+		$school = School::with('student')->where('school_uuid', $decryptedUuid)->firstOrFail();
+		// Check if there are no students, and pass an empty array if that's the case
+
+		// dd(StudentResource::collection($students));
+
+		return Inertia::render('Admin/School/View', [
+			'school' => new SchoolResource($school),
+			'students' => AdminStudentResource::collection($school->student),
+		]);
+
 	}
 }

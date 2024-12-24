@@ -42,6 +42,12 @@ class QuizController extends Controller
 				'remaining_time' => null,
 			]);
 
+		DB::table('students')
+			->where("student_uuid", $student_uuid)
+			->update([
+				'exam_attempt' => $final_submit,
+			]);
+
 		Session::forget("exam_start_time");
 		Session::forget("student_uuid");
 		Session::forget("exam_time");
@@ -76,6 +82,12 @@ class QuizController extends Controller
 				'answers' => $answers,
 				'exam_time' => $addExamEndTime,
 				'submit_type' => $interal_submit
+			]);
+
+		DB::table('students')
+			->where("student_uuid", $student_uuid)
+			->update([
+				'exam_attempt' => $interal_submit,
 			]);
 	}
 }

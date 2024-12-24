@@ -34,7 +34,12 @@ export default function AdminAuthLayout({ header, children }) {
 								>
 									Dashboard
 								</NavLink>
-
+								<NavLink
+									href={route("cpanel.school")}
+									active={route().current("cpanel.school")}
+								>
+									Schools
+								</NavLink>
 							</div>
 						</div>
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import TableHeading from "../TableHeading";
 import AdminPagination from "./AdminPagination";
+import { Link } from "@inertiajs/react";
 
 export default function SchoolTable({ schoolData }) {
 	// Track the current page and items per page
@@ -40,7 +41,15 @@ export default function SchoolTable({ schoolData }) {
 						{schoolData.schoolList.data.map((school, index) => (
 							<tr key={school.id} className=" border-b hover:bg-gray-50">
 								<td className="px-3 py-3">{startingIndex + index}</td>
-								<td className="px-3 py-3">{school.school_uuid}</td>
+								<td className="px-3 py-3">
+									<Link
+										href={route('cpanel.schoolView', { 'uuid': school.encrypted_uuid })}
+										className="text-violet-700 hover:underline hover:underline-offset-2 hover:text-violet-900"
+									>
+										{school.school_uuid}<br />
+										{school.encrypted_uuid}
+									</Link>
+								</td>
 								<td className="px-3 py-3"><span className="font-semibold text-violet-700">{school.school_name}</span><br />{school.school_email}<br />{school.school_mobile}</td>
 								<td className="px-3 py-3">{school.school_district}<br />{school.school_state}</td>
 								<td className="px-3 py-3">{school.incharge_name}<br />{school.incharge_email}<br />{school.incharge_mobile}</td>
@@ -51,7 +60,7 @@ export default function SchoolTable({ schoolData }) {
 				</table>
 				{/* {typeof schoolData.schoolList.total} */}
 
-			</div>
+			</div >
 			<AdminPagination links={schoolData.schoolList.links} count={schoolData.schoolList.total} />
 		</>
 	)
