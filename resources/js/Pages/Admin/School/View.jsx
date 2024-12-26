@@ -15,18 +15,17 @@ export default function Dashboard({
 	school,
 	students,
 	stats,
-	queryParams = null
+	queryParams = null,
 }) {
-
-
 	return (
-		<AdminAuthLayout header={
-			<h2 className="text-xl font-semibold leading-tight text-gray-800">
-				School Details: <span className="text-violet-700">{school.data.school_name}</span>
-			</h2>
-		}
+		<AdminAuthLayout
+			header={
+				<h2 className="text-xl font-semibold leading-tight text-gray-800">
+					School Details:{" "}
+					<span className="text-violet-700">{school.data.school_name}</span>
+				</h2>
+			}
 		>
-
 			<Head title="Admin Dashboard" />
 
 			{success && (
@@ -36,7 +35,8 @@ export default function Dashboard({
 							<div className="bg-indigo-900 text-center py-4 lg:px-4">
 								<div
 									className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
-									role="alert">
+									role="alert"
+								>
 									<span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">
 										New
 									</span>
@@ -60,7 +60,7 @@ export default function Dashboard({
 					<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg border border-gray-200">
 						<div className="p-6 text-gray-900 border-b">
 							<h3 className="text-lg font-medium mb-2">Search School:</h3>
-							{/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+							<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
 								<TextInput
 									placeholder="School UUID"
 									defaultValue={queryParams.uuid}
@@ -70,6 +70,9 @@ export default function Dashboard({
 									]}
 									onKeyPress={(e) => onKeyPress("uuid", e)}
 								/>
+							</div>
+
+							{/*
 								<TextInput
 									placeholder="School Name"
 									defaultValue={queryParams.name}
@@ -120,14 +123,12 @@ export default function Dashboard({
 							</div> */}
 						</div>
 						<div className="p-4 lg:p-6">
-
 							<DataTable tableValues={students} />
 							{/* <pre>{JSON.stringify(students, undefined, 2)}</pre> */}
-						</div >
-					</div >
-				</div >
-			</div >
-
-		</AdminAuthLayout >
+						</div>
+					</div>
+				</div>
+			</div>
+		</AdminAuthLayout>
 	);
 }

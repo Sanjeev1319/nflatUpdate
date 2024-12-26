@@ -139,7 +139,7 @@ class AdminController extends Controller
 
 		$studentQuery = Student::query();
 		// Paginate students associated with the school
-		$students = $studentQuery->where('school_uuid', $decryptedUuid)->paginate(10);
+		$students = $studentQuery->where('school_uuid', $decryptedUuid)->paginate(20);
 
 
 		// get the counts of students on various parameters for stats
