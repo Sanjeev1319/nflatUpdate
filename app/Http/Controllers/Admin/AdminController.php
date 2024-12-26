@@ -133,14 +133,35 @@ class AdminController extends Controller
 		$decryptedUuid = base64_decode($uuid);
 
 		// Fetch the school details using the decrypted UUID
-		$school = School::with('student')->where('school_uuid', $decryptedUuid)->firstOrFail();
-		// Check if there are no students, and pass an empty array if that's the case
+		$school = School::with('student')
+			->where('school_uuid', $decryptedUuid)
+			->firstOrFail();
 
-		// dd(StudentResource::collection($students));
+		$studentQuery = Student::query();
+		// Paginate students associated with the school
+		$students = $studentQuery->where('school_uuid', $decryptedUuid)->paginate(10);
+
+
+		// get the counts of students on various parameters for stats
+		// Aggregate the counts in a single query
+		$stats = Student::where('school_uuid', $decryptedUuid)
+			->selectRaw("
+				COUNT(*) as registeredStudents,
+				SUM(CASE WHEN nflat_category = 'Junior' THEN 1 ELSE 0 END) as jrRegisteredStudents,
+				SUM(CASE WHEN nflat_category = 'Intermediate' THEN 1 ELSE 0 END) as midRegisteredStudents,
+				SUM(CASE WHEN nflat_category = 'Senior' THEN 1 ELSE 0 END) as srRegisteredStudents,
+				SUM(CASE WHEN exam_attempt = '2' THEN 1 ELSE 0 END) as attemptedStudents,
+				SUM(CASE WHEN nflat_category = 'Junior' AND exam_attempt = '2' THEN 1 ELSE 0 END) as jrAttemptedStudents,
+				SUM(CASE WHEN nflat_category = 'Intermediate' AND exam_attempt = '2' THEN 1 ELSE 0 END) as midAttemptedStudents,
+				SUM(CASE WHEN nflat_category = 'Senior' AND exam_attempt = '2' THEN 1 ELSE 0 END) as srAttemptedStudents")
+			->first()->toArray();
+
+
 
 		return Inertia::render('Admin/School/View', [
 			'school' => new SchoolResource($school),
-			'students' => AdminStudentResource::collection($school->student),
+			'students' => AdminStudentResource::collection($students),
+			'stats' => $stats
 		]);
 
 	}
