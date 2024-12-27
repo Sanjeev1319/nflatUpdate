@@ -200,40 +200,81 @@ class AdminController extends Controller
 	public function renderScore()
 	{
 		$getNonScoreStudentsList = Student::where('exam_attempt', 2)
-			->where('score', '')
+			->where('score', null)
 			->pluck('student_uuid');
 
 		foreach ($getNonScoreStudentsList as $nonScoredStudent) {
 			// Initialize an empty array to store the IDs
-			$questionAnswers = [];
-			$flattenedArray = [];
 
 			// get the answers from the quiz log
 			$quiz_logs = DB::table('quiz_logs')->where('student_uuid', $nonScoredStudent)->firstOrFail();
-			$questions = json_decode($quiz_logs->questions, true);
+			if (!$quiz_logs) {
+				continue; // Skip if no quiz logs found
+			}
 
-			foreach ($questions as $question) {
-				foreach ($question as $que) {
-					foreach ($que as $flatArray) {
-						dd($flatArray);
-						$flattenedArray[] = $flatArray;
+			// Decode the `questions` and `answers` JSON
+			$questionsData = json_decode($quiz_logs->questions, true);
+			$answersData = json_decode($quiz_logs->answers, true);
+
+			if (empty($questionsData) || empty($answersData)) {
+				continue; // Skip if data is incomplete
+			}
+
+			// scoreData Array
+			$scoreData = [];
+
+			// total number of questions attempted
+			$totalAttempt = count($answersData);
+			$notAttempted = 60-$totalAttempt;
+
+			// negative Marking
+			$negativeMarking = 0.25;
+
+			$scoreData['total_attempt '] = $totalAttempt;
+			$scoreData['not_attempted '] = $notAttempted;
+
+			// Initialize score
+			$correctAnswers = 0;
+			$incorrectAnswers = 0;
+			$minScore = 0;
+			$maxScore = 60;
+
+			// Loop through categories and questions
+			foreach ($questionsData['categories'] as $category) {
+				foreach ($category['questions'] as $question) {
+					$questionId = $question['id'];
+					$correctAnswer = $question['correct_answer'] ?? null;
+
+					// Check if the user provided an answer
+					if (isset($answersData[$questionId])) {
+						$userAnswer = $answersData[$questionId];
+
+						// Increment score if the user's answer matches the correct answer
+						if ($userAnswer === $correctAnswer) {
+							$correctAnswers++;
+						} else {
+							$incorrectAnswers++;
+						}
 					}
 				}
 			}
-			// // Loop through each category (if categories are present) and extract the id and correct_answer
-			// foreach ($questions as $category) {
-			// 	foreach ($category as $que) {
-			// 		// Check if 'questions' exist within the que
-			// 		if (isset($que['questions']) && is_array($que['questions'])) {
-			// 			// Loop through each question in the que
-			// 			foreach ($que['questions'] as $question) {
-			// 				// Add the id and correct_answer as key-value pair in the result array
-			// 				$questionAnswers[$question['id']] = $question['correct_answer'];
-			// 			}
-			// 		}
-			// 	}
-			// }
+			$scoreData['correct_answers '] = $correctAnswers;
+			$scoreData['incorrect_answers '] = $incorrectAnswers;
+
+			$totalNegativeMarks = $incorrectAnswers * $negativeMarking;
+
+			// Calculate the raw score
+			$rawScore = $correctAnswers - $totalNegativeMarks;
+
+			// Ensure the score is within the range [minScore, maxScore]
+			$score = max($minScore, min($rawScore, $maxScore));
+
+			// Add the score to the $scoreData array
+			$scoreData['final_score'] = $score;
+
 		}
-		dd($flattenedArray);
+
+		dd($scoreData);
+
 	}
 }

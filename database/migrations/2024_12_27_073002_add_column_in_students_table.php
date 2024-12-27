@@ -11,7 +11,7 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::table('students', function (Blueprint $table) {
-			$table->string('score')->after('exam_attempt');
+			$table->string('score')->after('exam_attempt')->nullable();
 		});
 	}
 

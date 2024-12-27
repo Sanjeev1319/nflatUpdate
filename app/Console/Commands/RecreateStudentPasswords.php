@@ -36,6 +36,7 @@ class RecreateStudentPasswords extends Command
 
 			foreach ($students as $student) {
 				$password = strtoupper(Str::random(8));
+
 				// Encrypt it with the new key
 				$newEncryptedPassword = PasswordHelper::encrypt($password);
 				// Update the student record
@@ -44,6 +45,7 @@ class RecreateStudentPasswords extends Command
 
 				// Advance the progress bar
 				$bar->advance();
+
 			}
 
 			// Finish the progress bar

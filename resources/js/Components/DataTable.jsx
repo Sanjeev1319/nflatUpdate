@@ -130,7 +130,7 @@ export default function DataTable({ tableValues, count }) {
 				</table>
 			</div>
 			{typeof tableValues.meta === "undefined" ||
-				typeof tableValues.meta.links === "undefined" ? null : (
+			typeof tableValues.meta.links === "undefined" ? null : (
 				<Pagination links={tableValues.meta.links} count={count} />
 			)}
 		</>

@@ -31,7 +31,10 @@ export default function Dashboard({
 			delete queryParams[name];
 		}
 
-		router.get(route("cpanel.schoolView", { 'uuid': school.data.encrypted_uuid }), queryParams);
+		router.get(
+			route("cpanel.schoolView", { uuid: school.data.encrypted_uuid }),
+			queryParams
+		);
 	};
 
 	const onKeyPress = (name, e) => {
@@ -132,7 +135,6 @@ export default function Dashboard({
 									<option value={"12"}>12</option>
 								</SelectInput>
 								<SelectInput
-
 									onChange={(e) => [
 										searchFieldChanged("category", e.target.value),
 										handleFilterChange("category", e.target.value),
@@ -146,7 +148,9 @@ export default function Dashboard({
 								</SelectInput>
 								<div className="flex gap-3 justify-between">
 									<Link
-										href={route("cpanel.schoolView", { 'uuid': school.data.encrypted_uuid })}
+										href={route("cpanel.schoolView", {
+											uuid: school.data.encrypted_uuid,
+										})}
 										preserveScroll
 										preserveState
 										className="inline-flex justify-center w-2/4 items-center rounded-md border border-transparent bg-indigo-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-indigo-900"
@@ -170,6 +174,6 @@ export default function Dashboard({
 					</div>
 				</div>
 			</div>
-		</AdminAuthLayout >
+		</AdminAuthLayout>
 	);
 }

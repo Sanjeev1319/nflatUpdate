@@ -79,15 +79,5 @@ class Student extends Authenticatable
 		return $this->belongsTo(School::class, 'school_uuid', 'school_uuid');
 	}
 
-	// protected $primaryKey = 'student_uuid'; // If your primary key is custom
 
-	// public function getAuthIdentifierName()
-	// {
-	// 	return 'student_uuid';
-	// }
-
-	// public function getAuthIdentifier()
-	// {
-	// 	return $this->student_uuid;
-	// }
 }
