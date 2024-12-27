@@ -199,7 +199,8 @@ class SchoolDashboardController extends Controller
 				->where('nflat_category', request('category'));
 		}
 
-		$students = $students_query->where('school_uuid', $school_uuid)->paginate(20)->appends(request()->query());
+		$students = $students_query->where('school_uuid', $school_uuid)->paginate(20)
+			->appends(request()->query());
 
 		$studentCount = $students_query->where('school_uuid', $school_uuid)->count();
 

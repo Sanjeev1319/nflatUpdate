@@ -28,7 +28,6 @@ class AdminStudentResource extends JsonResource
 			"parent_email_id" => $this->parent_email_id,
 			"parent_mobile_number" => $this->parent_mobile_number,
 			"password" => $this->password,
-			"show_pass" => $this->show_pass,
 		];
 	}
 }

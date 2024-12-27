@@ -124,7 +124,13 @@ export default function SchoolStatistics({ stats }) {
 										<div className="font-medium text-xl leading-8">
 											{stats.attemptedStudents}
 											<span className="text-sm ms-2">
-												{stats.attemptedStudents / stats.registeredStudents * 100}%
+												{
+													stats.registeredStudents === 0 ? (
+														"-"
+													) : (
+														`${(stats.attemptedStudents / stats.registeredStudents) * 100}%`
+													)
+												}
 											</span>
 										</div>
 										{/* <div className="font-medium text-md leading-8">
@@ -150,7 +156,13 @@ export default function SchoolStatistics({ stats }) {
 										<div className="font-medium text-xl leading-8">
 											{stats.jrAttemptedStudents}
 											<span className="text-sm ms-2">
-												{stats.jrAttemptedStudents / stats.jrRegisteredStudents * 100}%
+												{
+													+stats.jrRegisteredStudents === 0 ? (
+														"-"
+													) : (
+														`${(+stats.jrAttemptedStudents / +stats.jrRegisteredStudents) * 100}%`
+													)
+												}
 											</span>
 										</div>
 										{/* <div className="font-medium text-md leading-8">
@@ -176,7 +188,13 @@ export default function SchoolStatistics({ stats }) {
 										<div className="font-medium text-xl leading-8 flex items-baseline">
 											{stats.midAttemptedStudents}
 											<span className="text-sm ms-2">
-												{stats.midAttemptedStudents / stats.midRegisteredStudents * 100}%
+												{
+													+stats.midRegisteredStudents === 0 ? (
+														"-"
+													) : (
+														`${(+stats.midAttemptedStudents / +stats.midRegisteredStudents) * 100}%`
+													)
+												}
 											</span>
 										</div>
 										{/* <div className="font-medium text-md leading-8">
@@ -202,7 +220,13 @@ export default function SchoolStatistics({ stats }) {
 										<div className="font-medium text-xl leading-8 flex items-baseline">
 											{stats.srAttemptedStudents}
 											<span className="text-sm ms-2">
-												{stats.srAttemptedStudents / stats.srRegisteredStudents * 100}%
+												{
+													+stats.srRegisteredStudents === 0 ? (
+														"-"
+													) : (
+														`${(+stats.srAttemptedStudents / +stats.srRegisteredStudents) * 100}%`
+													)
+												}
 											</span>
 										</div>
 										{/* <div className="font-medium text-md leading-8">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\PasswordHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -58,8 +59,19 @@ class Student extends Authenticatable
 		return [
 			'email_verified_at' => 'datetime',
 			'mobile_verified_at' => 'datetime',
-			'password' => 'encrypted'
 		];
+	}
+
+	// Automatically encrypt password when setting it
+	public function setPasswordAttribute($value)
+	{
+		$this->attributes['password'] = PasswordHelper::encrypt($value);
+	}
+
+	// Decrypt password when retrieving it
+	public function getPasswordAttribute($value)
+	{
+		return PasswordHelper::decrypt($value);
 	}
 
 	public function school()

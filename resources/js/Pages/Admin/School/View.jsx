@@ -17,6 +17,51 @@ export default function Dashboard({
 	stats,
 	queryParams = null,
 }) {
+	queryParams = queryParams || {};
+
+	// Define state for filters
+	const [category, setCategory] = useState(queryParams.category || "");
+	const [classLevel, setClassLevel] = useState(queryParams.class || "");
+	const [name, setName] = useState(queryParams.name || "");
+
+	const searchFieldChanged = (name, value) => {
+		if (value) {
+			queryParams[name] = value;
+		} else {
+			delete queryParams[name];
+		}
+
+		router.get(route("cpanel.schoolView", { 'uuid': school.data.encrypted_uuid }), queryParams);
+	};
+
+	const onKeyPress = (name, e) => {
+		if (e.key !== "Enter") return;
+
+		searchFieldChanged(name, e.target.value);
+	};
+
+	// Function to generate the export URL with query parameters
+	const generateUrl = () => {
+		const params = new URLSearchParams();
+		if (category) params.append("category", category);
+		if (classLevel) params.append("class", classLevel);
+		if (name) params.append("name", name);
+
+		// Construct the full URL with query parameters
+		return `${route("school.studentExport")}?${params.toString()}`;
+	};
+
+	// Handle filter change dynamically (optional)
+	const handleFilterChange = (filterName, value) => {
+		if (filterName === "category") {
+			setCategory(value);
+		} else if (filterName === "class") {
+			setClassLevel(value);
+		} else if (filterName === "name") {
+			setName(value);
+		}
+	};
+
 	return (
 		<AdminAuthLayout
 			header={
@@ -59,22 +104,10 @@ export default function Dashboard({
 				<div className="mx-auto max-w-full sm:px-6 lg:px-8">
 					<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg border border-gray-200">
 						<div className="p-6 text-gray-900 border-b">
-							<h3 className="text-lg font-medium mb-2">Search School:</h3>
+							<h3 className="text-lg font-medium mb-2">Student Search:</h3>
 							<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
 								<TextInput
-									placeholder="School UUID"
-									defaultValue={queryParams.uuid}
-									onBlur={(e) => [
-										searchFieldChanged("uuid", e.target.value),
-										handleFilterChange("uuid", e.target.value),
-									]}
-									onKeyPress={(e) => onKeyPress("uuid", e)}
-								/>
-							</div>
-
-							{/*
-								<TextInput
-									placeholder="School Name"
+									placeholder="Search Name"
 									defaultValue={queryParams.name}
 									onBlur={(e) => [
 										searchFieldChanged("name", e.target.value),
@@ -82,32 +115,40 @@ export default function Dashboard({
 									]}
 									onKeyPress={(e) => onKeyPress("name", e)}
 								/>
-								<TextInput
-									placeholder="Contact Number"
-									defaultValue={queryParams.contact}
-									onBlur={(e) => [
-										searchFieldChanged("contact", e.target.value),
-										handleFilterChange("contact", e.target.value),
-									]}
-									onKeyPress={(e) => onKeyPress("contact", e)}
-								/>
 								<SelectInput
 									onChange={(e) => [
-										searchFieldChanged("state", e.target.value),
-										handleFilterChange("state", e.target.value),
+										searchFieldChanged("class", e.target.value),
+										handleFilterChange("class", e.target.value),
 									]}
-									defaultValue={queryParams.state}
+									defaultValue={queryParams.class}
 								>
-									<option value={""}>Select State</option>
-									{statesList.map((state) => (
-										<option value={state} key={state}>{state}</option>
-									))}
-
+									<option value={""}>Search Class</option>
+									<option value={"6"}>6</option>
+									<option value={"7"}>7</option>
+									<option value={"8"}>8</option>
+									<option value={"9"}>9</option>
+									<option value={"10"}>10</option>
+									<option value={"11"}>11</option>
+									<option value={"12"}>12</option>
 								</SelectInput>
+								<SelectInput
 
+									onChange={(e) => [
+										searchFieldChanged("category", e.target.value),
+										handleFilterChange("category", e.target.value),
+									]}
+									defaultValue={queryParams.category}
+								>
+									<option value={""}>Search NFLAT Category</option>
+									<option value={"Junior"}>Junior</option>
+									<option value={"Intermediate"}>Intermediate</option>
+									<option value={"Senior"}>Senior</option>
+								</SelectInput>
 								<div className="flex gap-3 justify-between">
 									<Link
-										href={route("cpanel.school")}
+										href={route("cpanel.schoolView", { 'uuid': school.data.encrypted_uuid })}
+										preserveScroll
+										preserveState
 										className="inline-flex justify-center w-2/4 items-center rounded-md border border-transparent bg-indigo-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-indigo-900"
 									>
 										Clear Search
@@ -120,7 +161,7 @@ export default function Dashboard({
 										Export
 									</a>
 								</div>
-							</div> */}
+							</div>
 						</div>
 						<div className="p-4 lg:p-6">
 							<DataTable tableValues={students} />
@@ -129,6 +170,6 @@ export default function Dashboard({
 					</div>
 				</div>
 			</div>
-		</AdminAuthLayout>
+		</AdminAuthLayout >
 	);
 }

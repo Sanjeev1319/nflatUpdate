@@ -102,7 +102,9 @@ export default function StudentList({
 										searchFieldChanged("name", e.target.value),
 										handleFilterChange("name", e.target.value),
 									]}
-									onKeyPress={(e) => onKeyPress("name", e)}
+									onKeyPress={(e) => [
+										onKeyPress("name", e),
+									]}
 								/>
 								<SelectInput
 									onChange={(e) => [
