@@ -128,7 +128,7 @@ export default function SchoolStatistics({ stats }) {
 													stats.registeredStudents === 0 ? (
 														"-"
 													) : (
-														`${(stats.attemptedStudents / stats.registeredStudents) * 100}%`
+														`${((stats.attemptedStudents / stats.registeredStudents) * 100).toFixed(2)}%`
 													)
 												}
 											</span>
@@ -160,7 +160,7 @@ export default function SchoolStatistics({ stats }) {
 													+stats.jrRegisteredStudents === 0 ? (
 														"-"
 													) : (
-														`${(+stats.jrAttemptedStudents / +stats.jrRegisteredStudents) * 100}%`
+														`${((+stats.jrAttemptedStudents / +stats.jrRegisteredStudents) * 100).toFixed(2)}%`
 													)
 												}
 											</span>
@@ -192,7 +192,7 @@ export default function SchoolStatistics({ stats }) {
 													+stats.midRegisteredStudents === 0 ? (
 														"-"
 													) : (
-														`${(+stats.midAttemptedStudents / +stats.midRegisteredStudents) * 100}%`
+														`${((+stats.midAttemptedStudents / +stats.midRegisteredStudents) * 100).toFixed(2)}%`
 													)
 												}
 											</span>
@@ -224,7 +224,7 @@ export default function SchoolStatistics({ stats }) {
 													+stats.srRegisteredStudents === 0 ? (
 														"-"
 													) : (
-														`${(+stats.srAttemptedStudents / +stats.srRegisteredStudents) * 100}%`
+														`${((+stats.srAttemptedStudents / +stats.srRegisteredStudents) * 100).toFixed(2)}%`
 													)
 												}
 											</span>

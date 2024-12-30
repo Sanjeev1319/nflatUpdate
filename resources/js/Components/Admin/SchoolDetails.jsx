@@ -1,4 +1,5 @@
 export default function SchoolDetails({ schoolData }) {
+	const school_uuid = schoolData.data.school_uuid || schoolData.school_uuid
 	return (
 		<div className="py-6">
 			<div className="mx-auto max-w-full sm:px-6 lg:px-8">

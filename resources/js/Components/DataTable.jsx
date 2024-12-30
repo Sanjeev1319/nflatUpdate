@@ -1,10 +1,12 @@
 import Pagination from "@/Components/Pagination";
 import TableHeading from "@/Components/TableHeading";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { Link, router } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-export default function DataTable({ tableValues, count }) {
+export default function DataTable({ tableValues, count, admin }) {
+	admin = admin || false;
+
 	const deleteStudent = (student) => {
 		if (!window.confirm("Are you sure you want to delete the record?")) {
 			return;
@@ -78,7 +80,18 @@ export default function DataTable({ tableValues, count }) {
 						{tableValues.data.map((student, index) => (
 							<tr key={student.id} className=" border-b hover:bg-violet-100">
 								<td className="px-3 py-3">{startingIndex + index}</td>
-								<td className="px-3 py-3">{student.student_uuid}</td>
+								<td className="px-3 py-3">
+									{admin ? (
+										<Link
+											href={route('cpanel.studentView', { 'uuid': student.encrypted_student_uuid })}
+											className="text-violet-700 hover:text-violet-900 hover:font-semibold hover:underline underline-offset-2"
+										>
+											{student.student_uuid}
+										</Link>
+									) : (
+										student.student_uuid
+									)}
+								</td>
 								<td className="px-3 py-3">{student.student_name}</td>
 								<td className="px-3 py-3">
 									{student.student_class} - {student.student_section}
@@ -116,12 +129,15 @@ export default function DataTable({ tableValues, count }) {
 										>
 											<PencilSquareIcon className="h-6" />
 										</Link>
-										<button
-											onClick={(e) => deleteStudent(student)}
-											className="p-2 text-red-600 rounded-md hover:shadow-sm hover:bg-red-500 transition-all hover:text-white"
-										>
-											<TrashIcon className="h-5" />
-										</button>
+										{student.exam_attempt === null && (
+											<button
+												onClick={(e) => deleteStudent(student)}
+												className="p-2 text-red-600 rounded-md hover:shadow-sm hover:bg-red-500 transition-all hover:text-white"
+											>
+												<TrashIcon className="h-5" />
+											</button>
+										)}
+
 									</div>
 								</td>
 							</tr>
@@ -130,7 +146,7 @@ export default function DataTable({ tableValues, count }) {
 				</table>
 			</div>
 			{typeof tableValues.meta === "undefined" ||
-			typeof tableValues.meta.links === "undefined" ? null : (
+				typeof tableValues.meta.links === "undefined" ? null : (
 				<Pagination links={tableValues.meta.links} count={count} />
 			)}
 		</>

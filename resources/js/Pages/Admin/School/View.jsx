@@ -2,15 +2,13 @@ import SchoolDetails from "@/Components/Admin/SchoolDetails";
 import SchoolStatistics from "@/Components/Admin/SchoolStatistics";
 import DataTable from "@/Components/DataTable";
 import SelectInput from "@/Components/SelectInput";
-import StudentDetails from "@/Components/StudentDetails";
 import TextInput from "@/Components/TextInput";
 import AdminAuthLayout from "@/Layouts/AdminAuthLayout";
-import StudentList from "@/Pages/School/StudentList";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 import { Head, Link, router } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function Dashboard({
+export default function View({
 	success,
 	school,
 	students,
@@ -18,7 +16,6 @@ export default function Dashboard({
 	queryParams = null,
 }) {
 	queryParams = queryParams || {};
-
 	// Define state for filters
 	const [category, setCategory] = useState(queryParams.category || "");
 	const [classLevel, setClassLevel] = useState(queryParams.class || "");
@@ -51,7 +48,7 @@ export default function Dashboard({
 		if (name) params.append("name", name);
 
 		// Construct the full URL with query parameters
-		return `${route("school.studentExport")}?${params.toString()}`;
+		return `${route("cpanel.studentExport")}?school=${btoa(school.data.school_uuid)}${params.toString()}`;
 	};
 
 	// Handle filter change dynamically (optional)
@@ -105,7 +102,12 @@ export default function Dashboard({
 
 			<div className="pb-6">
 				<div className="mx-auto max-w-full sm:px-6 lg:px-8">
-					<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg border border-gray-200">
+					<div className="overflow-hidden bg-white shadow sm:rounded-lg border border-gray-300">
+						<div className="sm:px-6 py-3 px-4 bg-gray-50 font-medium border-b">
+							<p className="text-md leading-6 max-w-full mt-1 text-center">
+								Students List
+							</p>
+						</div>
 						<div className="p-6 text-gray-900 border-b">
 							<h3 className="text-lg font-medium mb-2">Student Search:</h3>
 							<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -168,7 +170,7 @@ export default function Dashboard({
 							</div>
 						</div>
 						<div className="p-4 lg:p-6">
-							<DataTable tableValues={students} />
+							<DataTable tableValues={students} admin={true} />
 							{/* <pre>{JSON.stringify(students, undefined, 2)}</pre> */}
 						</div>
 					</div>

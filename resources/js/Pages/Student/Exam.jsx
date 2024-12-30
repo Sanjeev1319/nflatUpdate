@@ -223,7 +223,7 @@ export default function Exam({
 									currentQuestion[key] && ( // Check if the value of the key is not null
 										<SecondaryButton
 											key={index}
-											className={`flex w-full my-3 py-4 ${answers[currentQuestion.id] === key
+											className={`flex w-full my-3 py-4 text-start ${answers[currentQuestion.id] === key
 												? "bg-green-400"
 												: "hover:bg-green-300"
 												}`}

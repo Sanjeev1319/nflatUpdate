@@ -37,8 +37,13 @@ Route::middleware(AuthAdminMiddleware::class)
 		Route::get('/school/{uuid}', [AdminController::class, 'schoolView'])
 			->name('schoolView');
 
+		Route::get('/student/{uuid}', [AdminController::class, 'studentView'])
+			->name('studentView');
 
 		Route::get('renderScore', [AdminController::class, 'renderScore'])
 			->name('renderScore');
+
+		Route::get('studentExport', [AdminController::class, 'studentExport'])
+			->name('studentExport');
 
 	});

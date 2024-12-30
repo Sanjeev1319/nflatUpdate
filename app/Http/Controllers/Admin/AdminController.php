@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\adminSchoolExport;
+use App\Exports\adminStudentExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminSchoolResource;
 use App\Http\Resources\AdminStudentResource;
+use App\Http\Resources\AdminViewStudentResource;
+use App\Http\Resources\quizLogResource;
 use App\Http\Resources\SchoolResource;
 use App\Http\Resources\StudentListResource;
 use App\Models\Pincode;
@@ -56,6 +59,7 @@ class AdminController extends Controller
 		];
 
 		return Inertia::render('Admin/Dashboard', [
+			'success' => session('success'),
 			'data' => $data,
 		]);
 	}
@@ -180,6 +184,12 @@ class AdminController extends Controller
 		// Encrypt school_uuid
 		$school->encrypted_uuid = base64_encode($school->school_uuid);
 
+		// Encrypt school_uuid for each school
+		$students->getCollection()->transform(function ($student) {
+			$student->encrypted_student_uuid = base64_encode($student->student_uuid);
+			return $student;
+		});
+
 		return Inertia::render('Admin/School/View', [
 			'school' => new AdminSchoolResource($school),
 			'students' => AdminStudentResource::collection($students),
@@ -187,8 +197,6 @@ class AdminController extends Controller
 			'queryParams' => request()->query() ?: null,
 		]);
 	}
-
-
 
 
 
@@ -203,78 +211,127 @@ class AdminController extends Controller
 			->where('score', null)
 			->pluck('student_uuid');
 
-		foreach ($getNonScoreStudentsList as $nonScoredStudent) {
-			// Initialize an empty array to store the IDs
+		if ($getNonScoreStudentsList !== null) {
+			foreach ($getNonScoreStudentsList as $nonScoredStudent) {
+				// Initialize an empty array to store the IDs
 
-			// get the answers from the quiz log
-			$quiz_logs = DB::table('quiz_logs')->where('student_uuid', $nonScoredStudent)->firstOrFail();
-			if (!$quiz_logs) {
-				continue; // Skip if no quiz logs found
-			}
+				// scoreData Array
+				$scoreData = [];
 
-			// Decode the `questions` and `answers` JSON
-			$questionsData = json_decode($quiz_logs->questions, true);
-			$answersData = json_decode($quiz_logs->answers, true);
+				// get the answers from the quiz log
+				$quiz_logs = DB::table('quiz_logs')->where('student_uuid', $nonScoredStudent)->firstOrFail();
+				if (!$quiz_logs) {
+					continue; // Skip if no quiz logs found
+				}
 
-			if (empty($questionsData) || empty($answersData)) {
-				continue; // Skip if data is incomplete
-			}
+				// Decode the `questions` and `answers` JSON
+				$questionsData = json_decode($quiz_logs->questions, true);
+				$answersData = json_decode($quiz_logs->answers, true);
 
-			// scoreData Array
-			$scoreData = [];
+				if (empty($questionsData) || empty($answersData)) {
+					continue; // Skip if data is incomplete
+				}
 
-			// total number of questions attempted
-			$totalAttempt = count($answersData);
-			$notAttempted = 60-$totalAttempt;
+				// total number of questions attempted
+				$totalAttempt = count($answersData);
+				$notAttempted = 60 - $totalAttempt;
 
-			// negative Marking
-			$negativeMarking = 0.25;
+				// negative Marking
+				$negativeMarking = 0.25;
 
-			$scoreData['total_attempt '] = $totalAttempt;
-			$scoreData['not_attempted '] = $notAttempted;
+				$scoreData['total_attempt'] = $totalAttempt;
+				$scoreData['not_attempted'] = $notAttempted;
 
-			// Initialize score
-			$correctAnswers = 0;
-			$incorrectAnswers = 0;
-			$minScore = 0;
-			$maxScore = 60;
+				// Initialize score
+				$correctAnswers = 0;
+				$incorrectAnswers = 0;
+				$minScore = 0;
+				$maxScore = 60;
 
-			// Loop through categories and questions
-			foreach ($questionsData['categories'] as $category) {
-				foreach ($category['questions'] as $question) {
-					$questionId = $question['id'];
-					$correctAnswer = $question['correct_answer'] ?? null;
+				// Loop through categories and questions
+				foreach ($questionsData['categories'] as $category) {
+					foreach ($category['questions'] as $question) {
+						$questionId = $question['id'];
+						$correctAnswer = $question['correct_answer'] ?? null;
 
-					// Check if the user provided an answer
-					if (isset($answersData[$questionId])) {
-						$userAnswer = $answersData[$questionId];
+						// Check if the user provided an answer
+						if (isset($answersData[$questionId])) {
+							$userAnswer = $answersData[$questionId];
 
-						// Increment score if the user's answer matches the correct answer
-						if ($userAnswer === $correctAnswer) {
-							$correctAnswers++;
-						} else {
-							$incorrectAnswers++;
+							// Increment score if the user's answer matches the correct answer
+							if ($userAnswer === $correctAnswer) {
+								$correctAnswers++;
+							} else {
+								$incorrectAnswers++;
+							}
 						}
 					}
 				}
+
+				$scoreData['correct_answers'] = $correctAnswers;
+				$scoreData['incorrect_answers'] = $incorrectAnswers;
+
+				$totalNegativeMarks = $incorrectAnswers * $negativeMarking;
+
+				// Calculate the raw score
+				$rawScore = $correctAnswers - $totalNegativeMarks;
+
+				// Ensure the score is within the range [minScore, maxScore]
+				$score = max($minScore, min($rawScore, $maxScore));
+
+				// Add the score to the $scoreData array
+				$scoreData['final_score'] = $score;
+
+				Student::where('student_uuid', $nonScoredStudent)
+					->update(['score' => $scoreData]);
 			}
-			$scoreData['correct_answers '] = $correctAnswers;
-			$scoreData['incorrect_answers '] = $incorrectAnswers;
 
-			$totalNegativeMarks = $incorrectAnswers * $negativeMarking;
-
-			// Calculate the raw score
-			$rawScore = $correctAnswers - $totalNegativeMarks;
-
-			// Ensure the score is within the range [minScore, maxScore]
-			$score = max($minScore, min($rawScore, $maxScore));
-
-			// Add the score to the $scoreData array
-			$scoreData['final_score'] = $score;
+			return to_route('cpanel.dashboard')->with('success', 'The score data is updated.');
 
 		}
 
-		dd($scoreData);
+		return to_route('cpanel.dashboard')->with('success', 'No data to update the scores.');
 
+	}
+
+
+	/*
+	 * download the student record
+	 *
+	 */
+	public function studentExport(Request $request)
+	{
+		// Retrieve query parameters (e.g., date range or specific columns)
+		$filters = $request->all();
+
+		$fileName = base64_decode($request->get('school'));
+
+		return Excel::download(new adminStudentExport($filters), $fileName . '.xlsx');
+	}
+
+	/**
+	 *
+	 * View the individual School and their statistics
+	 *
+	 */
+	public function studentView($uuid)
+	{
+
+		// Decrypt the school UUID
+		$decryptedUuid = base64_decode($uuid);
+
+		// Paginate students associated with the school
+		$student = Student::where('student_uuid', $decryptedUuid)->firstOrFail();
+
+		// Encrypt school_uuid
+		$student->encrypted_uuid = base64_encode($student->student_uuid);
+
+		$quiz_logs = DB::table('quiz_logs')
+			->where('student_uuid', $decryptedUuid)->firstOrFail();
+
+		return Inertia::render('Admin/Student/View', [
+			'student' => new AdminViewStudentResource($student),
+			'quiz_logs' => new quizLogResource($quiz_logs)
+		]);
 	}
 }

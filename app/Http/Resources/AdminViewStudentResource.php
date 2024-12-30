@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AdminStudentResource extends JsonResource
+class AdminViewStudentResource extends JsonResource
 {
 	/**
 	 * Transform the resource into an array.
@@ -17,8 +17,7 @@ class AdminStudentResource extends JsonResource
 		return [
 			"id" => $this->id,
 			"student_uuid" => $this->student_uuid,
-			"encrypted_student_uuid" => $this->encrypted_student_uuid,
-			"school_uuid" => $this->school_uuid,
+			"school_uuid" => $this->school,
 			"student_name" => $this->student_name,
 			"student_class" => $this->student_class,
 			"student_section" => $this->student_section,
@@ -30,6 +29,7 @@ class AdminStudentResource extends JsonResource
 			"parent_mobile_number" => $this->parent_mobile_number,
 			"password" => $this->password,
 			"exam_attempt" => $this->exam_attempt,
+			"score" => json_decode($this->score, true)
 		];
 	}
 }
