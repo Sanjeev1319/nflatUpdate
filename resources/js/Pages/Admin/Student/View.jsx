@@ -1,3 +1,4 @@
+import AdminStudentDetails from "@/Components/Admin/AdminStudentDetails";
 import SchoolDetails from "@/Components/Admin/SchoolDetails";
 import AdminAuthLayout from "@/Layouts/AdminAuthLayout";
 import { Head } from "@inertiajs/react";
@@ -8,7 +9,9 @@ export default function View({ student, quiz_logs, success }) {
 			header={
 				<h2 className="text-xl font-semibold leading-tight text-gray-800">
 					Student Details:{" "}
-					<span className="text-violet-700">{student.data.student_uuid} - {student.data.student_name}</span>
+					<span className="text-violet-700">
+						{student.data.student_uuid} - {student.data.student_name}
+					</span>
 				</h2>
 			}
 		>
@@ -39,6 +42,8 @@ export default function View({ student, quiz_logs, success }) {
 			{/* school address and basic details */}
 			<SchoolDetails schoolData={student.data.school_uuid} />
 
+			<AdminStudentDetails studentData={student} />
+
 			<div className="py-6">
 				<div className="mx-auto max-w-full sm:px-6 lg:px-8">
 					<div className="overflow-hidden bg-white shadow sm:rounded-lg border border-gray-300">
@@ -49,11 +54,11 @@ export default function View({ student, quiz_logs, success }) {
 						</div>
 						<div className="p-4 lg:p-6">
 							<pre>{JSON.stringify(student, undefined, 2)}</pre>
+							<pre>{JSON.stringify(quiz_logs, undefined, 2)}</pre>
 						</div>
 					</div>
 				</div>
 			</div>
 		</AdminAuthLayout>
-
-	)
+	);
 }

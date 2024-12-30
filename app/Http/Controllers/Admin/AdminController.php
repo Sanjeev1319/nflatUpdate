@@ -316,7 +316,6 @@ class AdminController extends Controller
 	 */
 	public function studentView($uuid)
 	{
-
 		// Decrypt the school UUID
 		$decryptedUuid = base64_decode($uuid);
 

@@ -1,5 +1,6 @@
 export default function SchoolDetails({ schoolData }) {
-	const school_uuid = schoolData.data.school_uuid || schoolData.school_uuid
+	const data = schoolData?.data || schoolData; // Fallback to `schoolData` if `data` is not present
+
 	return (
 		<div className="py-6">
 			<div className="mx-auto max-w-full sm:px-6 lg:px-8">
@@ -7,9 +8,7 @@ export default function SchoolDetails({ schoolData }) {
 					{/* School Address */}
 					<div className="border-r">
 						<div className="sm:px-6 py-3 px-4 bg-gray-50  font-medium">
-							<p className="text-md leading-6 max-w-3xl mt-1">
-								School Address
-							</p>
+							<p className="text-md leading-6 max-w-3xl mt-1">School Address</p>
 						</div>
 						<div className="border-t border-gray-200 pb-4">
 							<dl>
@@ -18,7 +17,7 @@ export default function SchoolDetails({ schoolData }) {
 										School ID:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.school_uuid}
+										{data.school_uuid}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -26,7 +25,7 @@ export default function SchoolDetails({ schoolData }) {
 										School Name:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.school_name}
+										{data.school_name}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -34,12 +33,10 @@ export default function SchoolDetails({ schoolData }) {
 										School Address:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.school_address_line_1},{" "}
-										{schoolData.data.school_area},
+										{data.school_address_line_1}, {data.school_area},
 										<br />
-										{schoolData.data.school_district},{" "}
-										{schoolData.data.school_state} -{" "}
-										{schoolData.data.school_pincode}
+										{data.school_district}, {data.school_state} -{" "}
+										{data.school_pincode}
 										<br />
 									</dd>
 								</div>
@@ -48,7 +45,7 @@ export default function SchoolDetails({ schoolData }) {
 										Board:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.school_board}
+										{data.school_board}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -56,7 +53,7 @@ export default function SchoolDetails({ schoolData }) {
 										Verified School Email:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.school_email}
+										{data.school_email}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50 md:border-none sm:border-b">
@@ -64,10 +61,9 @@ export default function SchoolDetails({ schoolData }) {
 										Verified School Mobile:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.school_mobile}
+										{data.school_mobile}
 									</dd>
 								</div>
-
 							</dl>
 						</div>
 					</div>
@@ -85,7 +81,7 @@ export default function SchoolDetails({ schoolData }) {
 										Incharge Name:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.incharge_name}
+										{data.incharge_name}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -93,7 +89,7 @@ export default function SchoolDetails({ schoolData }) {
 										Incharge Email ID:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.incharge_email}
+										{data.incharge_email}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50 border-b">
@@ -101,7 +97,7 @@ export default function SchoolDetails({ schoolData }) {
 										Incharge Mobile Number:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.incharge_mobile}
+										{data.incharge_mobile}
 									</dd>
 								</div>
 
@@ -110,7 +106,7 @@ export default function SchoolDetails({ schoolData }) {
 										Principal Name:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.principal_name}
+										{data.principal_name}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -118,7 +114,7 @@ export default function SchoolDetails({ schoolData }) {
 										Principal Email:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.principal_email}
+										{data.principal_email}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 sm:grid sm:grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -126,7 +122,7 @@ export default function SchoolDetails({ schoolData }) {
 										Principal Mobile Number:
 									</dt>
 									<dd className="sm:mt-0 sm:col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{schoolData.data.principal_mobile}
+										{data.principal_mobile}
 									</dd>
 								</div>
 							</dl>
@@ -135,5 +131,5 @@ export default function SchoolDetails({ schoolData }) {
 				</div>
 			</div>
 		</div>
-	)
+	);
 }
