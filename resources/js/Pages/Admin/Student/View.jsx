@@ -1,4 +1,5 @@
 import AdminStudentDetails from "@/Components/Admin/AdminStudentDetails";
+import AdminStudentExamDetails from "@/Components/Admin/AdminStudentExamDetails";
 import SchoolDetails from "@/Components/Admin/SchoolDetails";
 import AdminAuthLayout from "@/Layouts/AdminAuthLayout";
 import { Head } from "@inertiajs/react";
@@ -42,7 +43,10 @@ export default function View({ student, quiz_logs, success }) {
 			{/* school address and basic details */}
 			<SchoolDetails schoolData={student.data.school_uuid} />
 
-			<AdminStudentDetails studentData={student} />
+			<div className="grid grid-cols-2 gap-1">
+				<AdminStudentDetails studentData={student} />
+				<AdminStudentExamDetails examData={student} quizLogs={quiz_logs} />
+			</div>
 
 			<div className="py-6">
 				<div className="mx-auto max-w-full sm:px-6 lg:px-8">
