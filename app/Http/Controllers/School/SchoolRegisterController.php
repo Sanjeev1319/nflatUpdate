@@ -68,7 +68,7 @@ class SchoolRegisterController extends Controller
 
 		// generate a new uuid
 		// Fetch the last student with UUID
-		$lastSchool = School::latest('school_uuid')->first();
+		$lastSchool = School::latest('id')->first();
 		$lastNumber = $lastSchool ? (int) substr($lastSchool->school_uuid, 8) : 1000;  // Default to 1000 if no student exists
 		// Increment the number
 		$newNumber = $lastNumber + 1;

@@ -52,7 +52,7 @@ class StudentController extends Controller
 			;
 		}
 		;
-
+		
 		if ($quiz_logs->submit_type == 2) {
 			$exam_complete = 'yes';
 		}
@@ -60,6 +60,7 @@ class StudentController extends Controller
 		if ($quiz_logs->submit_type == 1) {
 			$retryAttempt = true;
 		}
+		
 
 		// dd($students);
 		return Inertia::render('Student/Index', [

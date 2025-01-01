@@ -27,11 +27,30 @@ class DatabaseSeeder extends Seeder
 		// // calling general Settings seeder
 		// $this->call(generalSettingSeeder::class);
 
-		// Admin::factory()->create([
-		// 	'username' => 'Test User',
-		// 	'email' => 'test@example.com',
-		// 	'password' => 'password',
-		// ]);
+		// Create Admin records manually
+Admin::create([
+    'username' => 'Sanjeev',
+    'email' => 'sanjeev.shinde@ncfe.org.in',
+    'password' => 'Shrisha@000010', // Hash the password for security
+]);
+
+Admin::create([
+    'username' => 'Roshan',
+    'email' => 'itexecutive02@ncfe.org.in',
+    'password' => 'Shrisha@000040',
+]);
+
+Admin::create([
+    'username' => 'Ruchi',
+    'email' => 'ruchi.thakur@ncfe.org.in',
+    'password' => 'Shrisha@000030',
+]);
+
+Admin::create([
+    'username' => 'Prathap',
+    'email' => 'prathap.hn@ncfe.org.in',
+    'password' => 'Shrisha@000020',
+]);
 
 		// Quizbank::factory()->count(3)->create();
 		// Quizquestions::factory()->count(500)->create();

@@ -3,6 +3,7 @@ import Instructions from "@/Components/Instructions";
 import StudentDetails from "@/Components/StudentDetails";
 import ExamScreenLayout from "@/Layouts/ExamScreenLayout";
 import { Head, useForm } from "@inertiajs/react";
+import { useEffect } from "react";
 
 export default function Index({
 	studentData,
@@ -11,6 +12,25 @@ export default function Index({
 	examComplete,
 	retryAttempt,
 }) {
+	
+	useEffect(() => {
+        const handlePopState = (event) => {
+            // Prevent navigating back
+            window.history.pushState(null, null, window.location.href);
+        };
+
+        // Push the current state to history
+        window.history.pushState(null, null, window.location.href);
+
+        // Listen for back/forward navigation
+        window.addEventListener("popstate", handlePopState);
+
+        // Cleanup the event listener
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, []);
+	
 	return (
 		<ExamScreenLayout
 			pageScreen={

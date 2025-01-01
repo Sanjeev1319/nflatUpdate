@@ -131,7 +131,7 @@ export default function Instructions({ studentData, allowAttempt, retryAttempt }
 									</>
 								) : (
 									<div className="p-3 mt-4 rounded-md text-red-800 bg-red-200 border-red-300 border text-center">
-										You have already attempted the test.
+										You have attempted the test.
 									</div>
 								)}
 							</form>

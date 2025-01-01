@@ -15,6 +15,24 @@ export default function Exam({
 	examTime,
 	studentData
 }) {
+	useEffect(() => {
+        const handlePopState = (event) => {
+            // Prevent navigating back
+            window.history.pushState(null, null, window.location.href);
+        };
+
+        // Push the current state to history
+        window.history.pushState(null, null, window.location.href);
+
+        // Listen for back/forward navigation
+        window.addEventListener("popstate", handlePopState);
+
+        // Cleanup the event listener
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, []);
+	
 	// Form data using Inertia.js
 	const { data, setData, post, processing } = useForm({
 		answers: "",
