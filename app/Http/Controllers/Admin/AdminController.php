@@ -320,13 +320,13 @@ class AdminController extends Controller
 		$decryptedUuid = base64_decode($uuid);
 
 		// Paginate students associated with the school
-		$student = Student::where('student_uuid', $decryptedUuid)->firstOrFail();
+		$student = Student::where('student_uuid', $decryptedUuid)->first();
 
 		// Encrypt school_uuid
 		$student->encrypted_uuid = base64_encode($student->student_uuid);
 
 		$quiz_logs = DB::table('quiz_logs')
-			->where('student_uuid', $decryptedUuid)->firstOrFail();
+			->where('student_uuid', $decryptedUuid)->first();
 
 		return Inertia::render('Admin/Student/View', [
 			'student' => new AdminViewStudentResource($student),

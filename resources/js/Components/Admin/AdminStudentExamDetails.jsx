@@ -1,6 +1,6 @@
 export default function AdminStudentExamDetails({ examData, quizLogs }) {
-	const data = examData.data;
-	const quizData = quizLogs.data;
+	const score = examData?.data?.score || {};
+	const quizData = quizLogs?.data || {};
 
 	return (
 		<div className="py-6">
@@ -18,7 +18,7 @@ export default function AdminStudentExamDetails({ examData, quizLogs }) {
 										Marks Obtained:
 									</dt>
 									<dd className="sm:mt-0 col-span-2 text-gray-700 leading-6 mt-1 text-md">
-										{data.score.final_score}
+										{score.final_score ?? "N/A"}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -26,7 +26,7 @@ export default function AdminStudentExamDetails({ examData, quizLogs }) {
 										Questions Answered:
 									</dt>
 									<dd className="sm:mt-0 col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{data.score.total_attempt}
+										{score.total_attempt ?? "N/A"}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -34,7 +34,7 @@ export default function AdminStudentExamDetails({ examData, quizLogs }) {
 										Questions Unanswered:
 									</dt>
 									<dd className="sm:mt-0 col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{data.score.not_attempted}
+										{score.not_attempted ?? "N/A"}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -42,7 +42,7 @@ export default function AdminStudentExamDetails({ examData, quizLogs }) {
 										Correct Answers:
 									</dt>
 									<dd className="sm:mt-0 col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{data.score.correct_answers}
+										{score.correct_answers ?? "N/A"}
 									</dd>
 								</div>
 								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 hover:bg-green-50">
@@ -50,7 +50,7 @@ export default function AdminStudentExamDetails({ examData, quizLogs }) {
 										Incorrect Answers:
 									</dt>
 									<dd className="sm:mt-0 col-span-2 text-gray-700 leading-6 mt-1 text-sm">
-										{data.score.incorrect_answers}
+										{score.incorrect_answers ?? "N/A"}
 									</dd>
 								</div>
 							</dl>

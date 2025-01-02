@@ -14,8 +14,13 @@ class quizLogResource extends JsonResource
 	 */
 	public function toArray(Request $request): array
 	{
+		// If the resource is empty, return an empty array
+		if ($this->resource === null) {
+				return [];
+		}
+
 		return [
-			"id" => $this->id,
+			"id" => $this->whenNotNull($this->id),
 			"student_uuid" => $this->student_uuid,
 			"exam_time" => json_decode($this->exam_time, true),
 			"attempt" => $this->attempt,
