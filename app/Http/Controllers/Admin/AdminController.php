@@ -46,6 +46,22 @@ class AdminController extends Controller
 			->count();
 
 
+		// Quiz attempt count
+		$studentAttempted = $student->where('exam_attempt', 2)->count();
+
+		// Jr, Mid, Sr Attempted Students
+		$jrStudentAttempted = $student->where('nflat_category', 'Junior')
+			->where('exam_attempt', 2)
+			->count();
+
+		$srStudentAttempted = $student->where('nflat_category', 'Senior')
+			->where('exam_attempt', 2)
+			->count();
+
+		$midStudentAttempted = $student->where('nflat_category', 'Intermediate')
+			->where('exam_attempt', 2)
+			->count();
+
 		// Json Encode Data
 		$data = [
 			'schoolCount' => $schoolCount,
@@ -56,6 +72,10 @@ class AdminController extends Controller
 			'midSchoolCount' => $midSchoolCount,
 			'srStudentCount' => $srStudentCount,
 			'srSchoolCount' => $srSchoolCount,
+			'studentAttempted' => $studentAttempted,
+			'jrStudentAttempted' => $jrStudentAttempted,
+			'srStudentAttempted' => $srStudentAttempted,
+			'midStudentAttempted' => $midStudentAttempted,
 		];
 
 		return Inertia::render('Admin/Dashboard', [
@@ -155,6 +175,10 @@ class AdminController extends Controller
 		if (request('category')) {
 			$studentQuery
 				->where('nflat_category', request('category'));
+		}
+		if (request('attempt')) {
+			$studentQuery
+				->where('exam_attempt', request('attempt'));
 		}
 		// Paginate students associated with the school
 		$students = $studentQuery->where('school_uuid', $decryptedUuid)->paginate(20)

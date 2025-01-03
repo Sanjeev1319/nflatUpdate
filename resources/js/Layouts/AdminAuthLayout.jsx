@@ -40,6 +40,12 @@ export default function AdminAuthLayout({ header, children }) {
 								>
 									Schools
 								</NavLink>
+								<NavLink
+									href={route("cpanel.renderScore")}
+									active={route().current("cpanel.renderScore")}
+								>
+									Calculate Score
+								</NavLink>
 							</div>
 						</div>
 
@@ -52,7 +58,7 @@ export default function AdminAuthLayout({ header, children }) {
 												type="button"
 												className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
 											>
-												{user.email}
+												{user.username}
 
 												<svg
 													className="-me-0.5 ms-2 h-4 w-4"
@@ -140,15 +146,28 @@ export default function AdminAuthLayout({ header, children }) {
 						>
 							Dashboard
 						</ResponsiveNavLink>
+
+						<ResponsiveNavLink
+							href={route("cpanel.school")}
+							active={route().current("cpanel.school")}
+						>
+							School
+						</ResponsiveNavLink>
+						<ResponsiveNavLink
+							href={route("cpanel.renderScore")}
+							active={route().current("cpanel.renderScore")}
+						>
+							Calculate Score
+						</ResponsiveNavLink>
 					</div>
 
 					<div className="border-t border-gray-200 pb-1 pt-4">
 						<div className="px-4">
 							<div className="text-base font-medium text-gray-800">
-								{user.email}
+								{user.username}
 							</div>
 							<div className="text-sm font-medium text-gray-500">
-								{user.email}
+								{user.username}
 							</div>
 						</div>
 
@@ -163,7 +182,7 @@ export default function AdminAuthLayout({ header, children }) {
 						</div>
 					</div>
 				</div>
-			</nav>
+			</nav >
 
 			{header && (
 				<header className="bg-white shadow">
@@ -172,9 +191,10 @@ export default function AdminAuthLayout({ header, children }) {
 						{header}
 					</div>
 				</header>
-			)}
+			)
+			}
 
 			<main>{children}</main>
-		</div>
+		</div >
 	);
 }

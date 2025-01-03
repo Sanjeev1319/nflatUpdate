@@ -93,7 +93,7 @@ export default function Dashboard({ success, links, school, queryParams = null, 
 				<div className="mx-auto max-w-full sm:px-6 lg:px-8">
 					<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg border border-gray-200">
 						<div className="p-6 text-gray-900 border-b">
-							<h3 className="text-lg font-medium mb-2">Search School:</h3>
+							<h3 className="text-lg font-medium mb-2">Search School: <span className="text-violet-700">{school.schoolList.total} Students</span></h3>
 							<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
 								<TextInput
 									placeholder="School UUID"

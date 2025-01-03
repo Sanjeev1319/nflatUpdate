@@ -37,7 +37,7 @@ export default function Dashboard({ success, links, data }) {
 			<div className="py-6">
 				<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
 					<div className="lg:grid-cols-5 gap-6 grid grid-cols-1 overflow-hidden">
-						<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg lg:col-span-2">
+						<div className="overflow-hidden bg-white shadow border border-gray-300 sm:rounded-lg lg:col-span-2">
 							<dl className="lg:grid-cols-2 grid grid-cols-1 overflow-hidden">
 								<div>
 									<div className="lg:p-6 p-4">
@@ -83,7 +83,7 @@ export default function Dashboard({ success, links, data }) {
 								</div>
 							</dl>
 						</div>
-						<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg lg:col-span-3">
+						<div className="overflow-hidden bg-white shadow border border-gray-300 sm:rounded-lg lg:col-span-3">
 							<dl className="lg:grid-cols-3 grid grid-cols-1 overflow-hidden">
 								<div>
 									<div className="lg:p-6 p-4">
@@ -135,6 +135,100 @@ export default function Dashboard({ success, links, data }) {
 										<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
 											<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
 												{data.srStudentCount} / {data.srSchoolCount}
+											</div>
+										</dd>
+									</div>
+									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
+										<Link
+											href={route("school.studentList", { category: "Senior" })}
+											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
+										>
+											View All
+										</Link>
+									</div>
+								</div>
+							</dl>
+						</div>
+						<div className="overflow-hidden bg-white shadow sm:rounded-lg border border-gray-300">
+							<dl className="grid grid-cols-1 overflow-hidden">
+
+								<div className="">
+									<div className="lg:p-6 p-4 pt-5 pb-5 pl-4 pr-4">
+										<dt className="text-gray-900 font-normal text-base leading-6">
+											Students Attempt
+										</dt>
+										<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
+											<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
+												{data.studentAttempted}
+											</div>
+										</dd>
+									</div>
+									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
+										<Link
+											href={route("school.studentList", {
+												category: "Intermediate",
+											})}
+											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
+										>
+											View All
+										</Link>
+									</div>
+								</div>
+							</dl>
+						</div>
+
+						<div className="overflow-hidden bg-white shadow border border-gray-300 sm:rounded-lg lg:col-span-3">
+							<dl className="lg:grid-cols-3 grid grid-cols-1 overflow-hidden">
+								<div>
+									<div className="lg:p-6 p-4">
+										<dt className="text-gray-900 font-normal text-base leading-6">
+											Junior Students
+										</dt>
+										<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
+											<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
+												{data.jrStudentAttempted}
+											</div>
+										</dd>
+									</div>
+									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
+										<Link
+											href={route("school.studentList", { category: "Junior" })}
+											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
+										>
+											View All
+										</Link>
+									</div>
+								</div>
+								<div className="border-gray-300 border-x">
+									<div className="lg:p-6 p-4 pt-5 pb-5 pl-4 pr-4">
+										<dt className="text-gray-900 font-normal text-base leading-6">
+											Intermediate Students
+										</dt>
+										<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
+											<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
+												{data.midStudentAttempted}
+											</div>
+										</dd>
+									</div>
+									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
+										<Link
+											href={route("school.studentList", {
+												category: "Intermediate",
+											})}
+											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
+										>
+											View All
+										</Link>
+									</div>
+								</div>
+								<div>
+									<div className="lg:p-6 p-4 pt-5 pb-5 pl-4 pr-4">
+										<dt className="text-gray-900 font-normal text-base leading-6">
+											Senior Students
+										</dt>
+										<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
+											<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
+												{data.srStudentAttempted}
 											</div>
 										</dd>
 									</div>

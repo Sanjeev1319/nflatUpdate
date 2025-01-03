@@ -20,6 +20,7 @@ export default function View({
 	const [category, setCategory] = useState(queryParams.category || "");
 	const [classLevel, setClassLevel] = useState(queryParams.class || "");
 	const [name, setName] = useState(queryParams.name || "");
+	const [attempt, setAttempt] = useState(queryParams.attempt || "");
 
 	const searchFieldChanged = (name, value) => {
 		if (value) {
@@ -46,6 +47,7 @@ export default function View({
 		if (category) params.append("category", category);
 		if (classLevel) params.append("class", classLevel);
 		if (name) params.append("name", name);
+		if (attempt) params.append("attempt", attempt);
 
 		// Construct the full URL with query parameters
 		return `${route("cpanel.studentExport")}?school=${btoa(school.data.school_uuid)}${params.toString()}`;
@@ -59,6 +61,8 @@ export default function View({
 			setClassLevel(value);
 		} else if (filterName === "name") {
 			setName(value);
+		} else if (filterName === "attempt") {
+			setAttempt(value);
 		}
 	};
 
@@ -109,7 +113,7 @@ export default function View({
 							</p>
 						</div>
 						<div className="p-6 text-gray-900 border-b">
-							<h3 className="text-lg font-medium mb-2">Student Search:</h3>
+							<h3 className="text-lg font-medium mb-2">Student Search: <span className="text-violet-700">{students.meta.total} Students</span></h3>
 							<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
 								<TextInput
 									placeholder="Search Name"
@@ -147,6 +151,17 @@ export default function View({
 									<option value={"Junior"}>Junior</option>
 									<option value={"Intermediate"}>Intermediate</option>
 									<option value={"Senior"}>Senior</option>
+								</SelectInput>
+								<SelectInput
+									onChange={(e) => [
+										searchFieldChanged("attempt", e.target.value),
+										handleFilterChange("attempt", e.target.value),
+									]}
+									defaultValue={queryParams.attempt}
+								>
+									<option value={""}>Student Attempts</option>
+									<option value={"2"}>Attempted</option>
+									<option value={"1"}>Incomplete</option>
 								</SelectInput>
 								<div className="flex gap-3 justify-between">
 									<Link
