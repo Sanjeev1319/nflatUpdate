@@ -352,9 +352,25 @@ class AdminController extends Controller
 		$quiz_logs = DB::table('quiz_logs')
 			->where('student_uuid', $decryptedUuid)->first();
 
+		if (!is_null($quiz_logs->answers)) {
+			$answers = json_decode($quiz_logs->answers, true);
+			$questions = json_decode($quiz_logs->questions, true);
+
+			foreach ($questions['categories'] as &$catValue) {
+				foreach ($catValue['questions'] as &$quest) {
+					$questionId = $quest['id'];
+					$quest['user_answer'] = $answers[$questionId] ?? null;
+				}
+			}
+			unset($catValue, $quest); // Unset references for safety
+		}
+
+		// dd([json_decode($quiz_logs->questions, true), json_decode($quiz_logs->answers, true)]);
+
 		return Inertia::render('Admin/Student/View', [
 			'student' => new AdminViewStudentResource($student),
-			'quiz_logs' => new quizLogResource($quiz_logs)
+			'quiz_logs' => new quizLogResource($quiz_logs),
+			'questionAnswers' => $questions,
 		]);
 	}
 }

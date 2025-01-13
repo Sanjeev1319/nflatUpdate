@@ -4,7 +4,7 @@ import SchoolDetails from "@/Components/Admin/SchoolDetails";
 import AdminAuthLayout from "@/Layouts/AdminAuthLayout";
 import { Head } from "@inertiajs/react";
 
-export default function View({ student, quiz_logs, success }) {
+export default function View({ student, quiz_logs, questionAnswers, success }) {
 	return (
 		<AdminAuthLayout
 			header={
@@ -57,8 +57,8 @@ export default function View({ student, quiz_logs, success }) {
 							</p>
 						</div>
 						<div className="p-4 lg:p-6">
-							<pre>{JSON.stringify(student, undefined, 2)}</pre>
-							<pre>{JSON.stringify(quiz_logs, undefined, 2)}</pre>
+							{/* <pre>{JSON.stringify(student, undefined, 2)}</pre> */}
+							<pre>{JSON.stringify(questionAnswers, undefined, 2)}</pre>
 						</div>
 					</div>
 				</div>
