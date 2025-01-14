@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\adminSchoolExport;
 use App\Exports\adminStudentExport;
+use App\Exports\questionPaperExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminSchoolResource;
 use App\Http\Resources\AdminStudentResource;
@@ -365,6 +366,8 @@ class AdminController extends Controller
 			unset($catValue, $quest); // Unset references for safety
 		}
 
+		$questions['encrypted_uuid'] = $uuid;
+
 		// dd([json_decode($quiz_logs->questions, true), json_decode($quiz_logs->answers, true)]);
 
 		return Inertia::render('Admin/Student/View', [
@@ -372,5 +375,59 @@ class AdminController extends Controller
 			'quiz_logs' => new quizLogResource($quiz_logs),
 			'questionAnswers' => $questions,
 		]);
+	}
+
+	/*
+	 * download the student question paper with answers record
+	 *
+	 */
+	public function questionPaperExport(Request $request)
+	{
+		$student_uuid = base64_decode($request->encrypted_uuid);
+		$categories = $request->categories;
+
+		$exportData = [];
+		foreach ($categories as $catKey => $catValue) {
+			$ques = $catValue["questions"];
+			// dd($ques[0]);
+			foreach ($ques as $queValue) {
+				$marks = 0;
+				if (!isset($queValue["user_answer"])) {
+					$marks = 0;
+				} elseif (isset($queValue['user_answer']) && $queValue['user_answer'] === $queValue["correct_answer"]) {
+					$marks = 1;
+				} else
+					(
+						$marks = -0.25
+					);
+
+				// dd($queValue);
+				$exportData[] = [
+					"student_uuid" => $student_uuid,
+					"quizbank_id" => $queValue["quizbank_id"],
+					"category" => $queValue["category"],
+					"question" => $queValue["question"],
+					"A" => $queValue["A"],
+					"B" => $queValue["B"],
+					"C" => $queValue["C"],
+					"D" => $queValue["D"],
+					"id" => $queValue["id"],
+					"language" => $queValue["language"],
+					"correct_answer" => $queValue["correct_answer"],
+					"user_answer" => $queValue['user_answer'] ?? null,
+					"marks" => $marks
+				];
+			}
+		}
+
+		// Retrieve query parameters (e.g., date range or specific columns)
+		$filters = $exportData;
+
+
+		// dd(gettype($filters));
+
+		$fileName = base64_decode($request->encrypted_uuid);
+
+		return Excel::download(new questionPaperExport($filters), $fileName . '.xlsx');
 	}
 }

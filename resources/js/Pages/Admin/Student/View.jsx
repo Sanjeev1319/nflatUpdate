@@ -43,9 +43,9 @@ export default function View({ student, quiz_logs, questionAnswers, success }) {
 			{/* school address and basic details */}
 			<SchoolDetails schoolData={student.data.school_uuid} />
 
-			<div className="grid grid-cols-2 gap-1">
+			<div className="grid md:grid-cols-2 grid-cols-1 gap-1">
 				<AdminStudentDetails studentData={student} />
-				<AdminStudentExamDetails examData={student} quizLogs={quiz_logs} />
+				<AdminStudentExamDetails examData={student} quizLogs={quiz_logs} exportQuestionPaper={questionAnswers} />
 			</div>
 
 			<div className="py-6">

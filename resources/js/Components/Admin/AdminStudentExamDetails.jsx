@@ -1,6 +1,15 @@
-export default function AdminStudentExamDetails({ examData, quizLogs }) {
+import { router } from "@inertiajs/react";
+import PrimaryButton from "../PrimaryButton";
+
+export default function AdminStudentExamDetails({ examData, quizLogs, exportQuestionPaper }) {
 	const score = examData?.data?.score || {};
 	const quizData = quizLogs?.data || {};
+
+	const handleExportQuePaper = (e) => {
+		e.preventDefault();
+
+		router.post(route("cpanel.questionPaperExport", exportQuestionPaper)); // Use router.post for POST requests
+	}
 
 	return (
 		<div className="py-6">
@@ -52,6 +61,15 @@ export default function AdminStudentExamDetails({ examData, quizLogs }) {
 									<dd className="sm:mt-0 col-span-2 text-gray-700 leading-6 mt-1 text-sm">
 										{score.incorrect_answers ?? "N/A"}
 									</dd>
+								</div>
+								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 text-center">
+									<dt className="text-gray-900 font-medium text-sm leading-5 col-span-3">
+										<PrimaryButton
+											onClick={handleExportQuePaper}
+										>
+											Export Question Paper
+										</PrimaryButton>
+									</dt>
 								</div>
 							</dl>
 						</div>
