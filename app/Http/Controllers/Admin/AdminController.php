@@ -386,7 +386,21 @@ class AdminController extends Controller
 		$student_uuid = base64_decode($request->encrypted_uuid);
 		$categories = $request->categories;
 
-		$exportData = [];
+		$exportData[] = [
+			'Question ID',
+			'Student UUID',
+			'NFLAT Category',
+			'Quiz Category',
+			'Question',
+			'A',
+			'B',
+			'C',
+			'D',
+			'Language',
+			'Correct Answer',
+			'Student Answer',
+			'Mark',
+		];
 		foreach ($categories as $catKey => $catValue) {
 			$ques = $catValue["questions"];
 			// dd($ques[0]);
@@ -403,6 +417,7 @@ class AdminController extends Controller
 
 				// dd($queValue);
 				$exportData[] = [
+					"id" => $queValue["id"],
 					"student_uuid" => $student_uuid,
 					"quizbank_id" => $queValue["quizbank_id"],
 					"category" => $queValue["category"],
@@ -411,7 +426,6 @@ class AdminController extends Controller
 					"B" => $queValue["B"],
 					"C" => $queValue["C"],
 					"D" => $queValue["D"],
-					"id" => $queValue["id"],
 					"language" => $queValue["language"],
 					"correct_answer" => $queValue["correct_answer"],
 					"user_answer" => $queValue['user_answer'] ?? null,

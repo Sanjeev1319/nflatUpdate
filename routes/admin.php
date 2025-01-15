@@ -50,7 +50,7 @@ Route::middleware(AuthAdminMiddleware::class)
 		Route::get('studentExport', [AdminController::class, 'studentExport'])
 			->name('studentExport');
 
-		Route::post('questionPaperExport', [AdminController::class, 'questionPaperExport'])
+		Route::get('questionPaperExport', [AdminController::class, 'questionPaperExport'])
 			->name('questionPaperExport');
 
 	});

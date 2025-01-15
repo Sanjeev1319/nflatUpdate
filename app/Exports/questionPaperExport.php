@@ -3,19 +3,26 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\FromCollection;
 
 class questionPaperExport implements FromArray
 {
 	protected $filters;
 
-	public function __construct($filters)
+	public function __construct(array $filters)
 	{
 		$this->filters = $filters;
 	}
 
-	public function array()
+
+	/**
+	 * Returns the array representation of the data to export.
+	 *
+	 * @return array
+	 */
+	public function array(): array
 	{
-		return $this->filters;
+		return [
+			"array" => $this->filters,
+		];
 	}
 }

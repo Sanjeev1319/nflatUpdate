@@ -64,11 +64,11 @@ export default function AdminStudentExamDetails({ examData, quizLogs, exportQues
 								</div>
 								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 text-center">
 									<dt className="text-gray-900 font-medium text-sm leading-5 col-span-3">
-										<PrimaryButton
-											onClick={handleExportQuePaper}
+										<a
+											href={route("cpanel.questionPaperExport", exportQuestionPaper)}
 										>
 											Export Question Paper
-										</PrimaryButton>
+										</a>
 									</dt>
 								</div>
 							</dl>
