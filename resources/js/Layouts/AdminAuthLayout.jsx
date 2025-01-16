@@ -41,6 +41,12 @@ export default function AdminAuthLayout({ header, children }) {
 									Schools
 								</NavLink>
 								<NavLink
+									href={route("cpanel.student")}
+									active={route().current("cpanel.student")}
+								>
+									Students
+								</NavLink>
+								<NavLink
 									href={route("cpanel.renderScore")}
 									active={route().current("cpanel.renderScore")}
 								>
@@ -152,6 +158,13 @@ export default function AdminAuthLayout({ header, children }) {
 							active={route().current("cpanel.school")}
 						>
 							School
+						</ResponsiveNavLink>
+
+						<ResponsiveNavLink
+							href={route("cpanel.student")}
+							active={route().current("cpanel.student")}
+						>
+							Student
 						</ResponsiveNavLink>
 						<ResponsiveNavLink
 							href={route("cpanel.renderScore")}

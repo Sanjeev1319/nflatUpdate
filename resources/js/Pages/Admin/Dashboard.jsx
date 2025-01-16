@@ -72,9 +72,7 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", {
-												category: "Intermediate",
-											})}
+											href={route("cpanel.student")}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
 										>
 											View All
@@ -98,7 +96,7 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", { category: "Junior" })}
+											href={route("cpanel.student", { category: "Junior" })}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
 										>
 											View All
@@ -118,7 +116,7 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", {
+											href={route("cpanel.student", {
 												category: "Intermediate",
 											})}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
@@ -140,7 +138,7 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", { category: "Senior" })}
+											href={route("cpanel.student", { category: "Senior" })}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
 										>
 											View All
@@ -165,8 +163,8 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", {
-												category: "Intermediate",
+											href={route("cpanel.student", {
+												attempt: "2",
 											})}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
 										>
@@ -192,7 +190,7 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", { category: "Junior" })}
+											href={route("cpanel.student", { category: "Junior", attempt: "2" })}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
 										>
 											View All
@@ -212,9 +210,7 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", {
-												category: "Intermediate",
-											})}
+											href={route("cpanel.student", { category: "Intermediate", attempt: "2" })}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
 										>
 											View All
@@ -234,7 +230,7 @@ export default function Dashboard({ success, links, data }) {
 									</div>
 									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
 										<Link
-											href={route("school.studentList", { category: "Senior" })}
+											href={route("cpanel.student", { category: "Senior", attempt: "2" })}
 											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
 										>
 											View All

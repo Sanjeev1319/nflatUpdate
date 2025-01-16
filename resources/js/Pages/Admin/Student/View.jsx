@@ -57,56 +57,44 @@ export default function View({ student, quiz_logs, questionAnswers, success }) {
 							</p>
 						</div>
 						<div className="p-4 lg:p-6">
-							{questionAnswers.categories.map((category, categoryIndex) => (
-								<div key={categoryIndex}>
-									<h3 className="my-3 font-semibold bg-indigo-700 text-white ps-3 py-2 rounded-sm">{category.category_name}</h3>
-									{category.questions.map((question, questionIndex) => (
-										<div key={questionIndex}>
-											<h4 className="mb-2 font-medium">{questionIndex + 1}. {question.question}</h4>
-											{/* Display "Not Attempted" if user_answer is null */}
-											{question.user_answer === null && (
-												<p className="text-gray-500 italic">Not Attempted</p>
-											)}
-											<ul className="mb-4 ms-4">
-												{["A", "B", "C", "D"].map((option) => {
-													// Determine the appropriate styling
-													let className = "";
-													if (question.correct_answer === option) {
-														className = "text-green-500 font-bold"; // Green for correct answer
-													}
-													if (
-														question.user_answer === option &&
-														question.user_answer !== question.correct_answer
-													) {
-														className = "text-red-500 font-bold"; // Red for incorrect user answer
-													}
+							<div className="grid grid-cols-2 gap-20">
+								{questionAnswers.categories.map((category, categoryIndex) => (
+									<div key={categoryIndex}>
+										<h3 className="my-3 font-semibold bg-indigo-700 text-white ps-3 py-2 rounded-sm">{category.category_name}</h3>
+										{category.questions.map((question, questionIndex) => (
+											<div key={questionIndex}>
+												<h4 className="mb-2 font-medium">{questionIndex + 1}. {question.question}</h4>
+												{/* Display "Not Attempted" if user_answer is null */}
+												{question.user_answer === null && (
+													<p className="text-gray-500 italic">Not Attempted</p>
+												)}
+												<ul className="mb-4 ms-4">
+													{["A", "B", "C", "D"].map((option) => {
+														// Determine the appropriate styling
+														let className = "";
+														if (question.correct_answer === option) {
+															className = "text-green-500 font-bold"; // Green for correct answer
+														}
+														if (
+															question.user_answer === option &&
+															question.user_answer !== question.correct_answer
+														) {
+															className = "text-red-500 font-bold"; // Red for incorrect user answer
+														}
 
-													return (
-														<li key={option} className={className}>
-															<strong>{option}:</strong> {question[option]}
-														</li>
-													);
-												})}
-											</ul>
+														return (
+															<li key={option} className={className}>
+																<strong>{option}:</strong> {question[option]}
+															</li>
+														);
+													})}
+												</ul>
 
-										</div>
-									))}
-								</div>
-							))}
-
-
-							<ol className="list-decimal list-inside" >
-								<li>Questions</li>
-								<ul className="list-inside ps-6 list-disc">
-									<li>Answer</li>
-									<li>Answer</li>
-									<li>Answer</li>
-									<li>Answer</li>
-								</ul>
-							</ol>
-							<pre>
-								{JSON.stringify(questionAnswers.categories[0], undefined, 2)}
-							</pre>
+											</div>
+										))}
+									</div>
+								))}
+							</div>
 						</div>
 					</div>
 				</div>

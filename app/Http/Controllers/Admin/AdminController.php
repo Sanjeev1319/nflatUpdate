@@ -135,6 +135,70 @@ class AdminController extends Controller
 		]);
 	}
 
+
+	/**
+	 *
+	 * View the individual School and their statistics
+	 *
+	 */
+	public function student()
+	{
+		$studentQuery = Student::query();
+
+		if (request("name")) {
+			$studentQuery
+				->where("student_name", "like", "%" . request("name") . "%");
+		}
+		if (request('class')) {
+			$studentQuery
+				->where('student_class', request('class'));
+		}
+		if (request('category')) {
+			$studentQuery
+				->where('nflat_category', request('category'));
+		}
+		if (request('attempt')) {
+			$studentQuery
+				->where('exam_attempt', request('attempt'));
+		}
+		// Paginate students associated with the school
+		$students = $studentQuery->paginate(20)
+			->appends(request()->query());
+
+
+		// get the counts of students on various parameters for stats
+		// Aggregate the counts in a single query
+		$stats = Student::selectRaw("
+				COUNT(*) as registeredStudents,
+				SUM(CASE WHEN nflat_category = 'Junior' THEN 1 ELSE 0 END) as jrRegisteredStudents,
+				SUM(CASE WHEN nflat_category = 'Intermediate' THEN 1 ELSE 0 END) as midRegisteredStudents,
+				SUM(CASE WHEN nflat_category = 'Senior' THEN 1 ELSE 0 END) as srRegisteredStudents,
+				SUM(CASE WHEN exam_attempt = '2' THEN 1 ELSE 0 END) as attemptedStudents,
+				SUM(CASE WHEN nflat_category = 'Junior' AND exam_attempt = '2' THEN 1 ELSE 0 END) as jrAttemptedStudents,
+				SUM(CASE WHEN nflat_category = 'Intermediate' AND exam_attempt = '2' THEN 1 ELSE 0 END) as midAttemptedStudents,
+				SUM(CASE WHEN nflat_category = 'Senior' AND exam_attempt = '2' THEN 1 ELSE 0 END) as srAttemptedStudents")
+			->first()->toArray();
+
+
+		// Use array_map to replace null values with 0
+		$stats = array_map(function ($value) {
+			return $value === null ? (int) 0 : $value;
+		}, $stats);
+
+		// Encrypt school_uuid for each school
+		$students->getCollection()->transform(function ($student) {
+			$student->encrypted_student_uuid = base64_encode($student->student_uuid);
+			return $student;
+		});
+
+		return Inertia::render('Admin/Student/Index', [
+			'students' => AdminStudentResource::collection($students),
+			'stats' => $stats,
+			'queryParams' => request()->query() ?: null,
+		]);
+	}
+
+
 	/**
 	 *
 	 * download the student record
@@ -329,8 +393,12 @@ class AdminController extends Controller
 		// Retrieve query parameters (e.g., date range or specific columns)
 		$filters = $request->all();
 
-		$fileName = base64_decode($request->get('school'));
-
+		$school_id = $request->get('school');
+		if (isset($school_id)) {
+			$fileName = base64_decode($request->get('school'));
+		} else {
+			$fileName = 'StudentList';
+		}
 		return Excel::download(new adminStudentExport($filters), $fileName . '.xlsx');
 	}
 

@@ -31,7 +31,8 @@ Route::middleware(AuthAdminMiddleware::class)
 		Route::get('/school', [AdminController::class, 'school'])
 			->name('school');
 
-
+		Route::get('/student', [AdminController::class, 'student'])
+			->name('student');
 
 		Route::get('/school/{uuid}', [AdminController::class, 'schoolView'])
 			->name('schoolView');
