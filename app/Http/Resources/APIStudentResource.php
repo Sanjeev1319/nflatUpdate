@@ -17,7 +17,7 @@ class APIStudentResource extends JsonResource
 		return [
 			"id" => $this->id,
 			"pincode" => $this->school->school_pincode,
-			"category" => "NFLAT" . strtoupper($this->nflat_category),
+			"category" => "NFLAT " . strtoupper($this->nflat_category),
 			"standard" => $this->student_class,
 			"gender" => substr($this->gender, 0, 1),
 			"dob" => $this->date_of_birth,
