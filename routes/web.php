@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\OTPController;
 use App\Http\Controllers\PincodeController;
 use App\Http\Controllers\ProfileController;
@@ -35,6 +36,9 @@ Route::get('sidebar', function () {
 Route::post('/upload-students', [SchoolDashboardController::class, 'import'])->name('upload-students');
 Route::get('/fetch-pincode-details', [PincodeController::class, 'getPincodeDetails'])->name("fetch.pincode.details");
 
+
+// Route::get('nflat_school', [ApiController::class, 'nflat_school']);
+// Route::get('nflat_student', [ApiController::class, 'nflat_student']);
 
 // require __DIR__.'/auth.php';
 require __DIR__ . '/school.php';
