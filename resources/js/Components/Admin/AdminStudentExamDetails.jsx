@@ -62,15 +62,18 @@ export default function AdminStudentExamDetails({ examData, quizLogs, exportQues
 										{score.incorrect_answers ?? "N/A"}
 									</dd>
 								</div>
-								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 text-center">
-									<dt className="text-gray-900 font-medium text-sm leading-5 col-span-3">
-										<a
-											href={route("cpanel.questionPaperExport", exportQuestionPaper)}
-										>
-											Export Question Paper
-										</a>
-									</dt>
-								</div>
+								{score.final_score && (
+									<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 text-center">
+										<dt className="text-gray-900 font-medium text-sm leading-5 col-span-3">
+											<a
+												href={route("cpanel.questionPaperExport", exportQuestionPaper)}
+											>
+												Export Question Paper
+											</a>
+										</dt>
+									</div>
+								)}
+
 							</dl>
 						</div>
 					</div>

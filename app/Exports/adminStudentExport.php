@@ -59,6 +59,9 @@ class adminStudentExport implements FromCollection, WithHeadings
 			if (isset($this->filters['name'])) {
 				$students->where("student_name", "like", "%" . $this->filters["student_name"] . "%");
 			}
+			if (isset($this->filters['attempt'])) {
+				$students->where('exam_attempt', request('attempt'));
+			}
 
 			return $students->select(
 				'student_uuid',

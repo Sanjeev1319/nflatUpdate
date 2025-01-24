@@ -96,7 +96,7 @@ export default function Index({
 				</div>
 			)}
 
-			<div className="pb-6">
+			<div className="py-6">
 				<div className="mx-auto max-w-full sm:px-6 lg:px-8">
 					<div className="overflow-hidden bg-white shadow sm:rounded-lg border border-gray-300">
 						<div className="sm:px-6 py-3 px-4 bg-gray-50 font-medium border-b">

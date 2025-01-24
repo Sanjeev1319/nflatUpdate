@@ -421,7 +421,7 @@ class AdminController extends Controller
 		$quiz_logs = DB::table('quiz_logs')
 			->where('student_uuid', $decryptedUuid)->first();
 
-		if (!is_null($quiz_logs->answers)) {
+		if (isset($quiz_logs->answers) && !is_null($quiz_logs->answers)) {
 			$answers = json_decode($quiz_logs->answers, true);
 			$questions = json_decode($quiz_logs->questions, true);
 

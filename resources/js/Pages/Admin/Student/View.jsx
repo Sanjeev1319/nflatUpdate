@@ -4,7 +4,7 @@ import SchoolDetails from "@/Components/Admin/SchoolDetails";
 import AdminAuthLayout from "@/Layouts/AdminAuthLayout";
 import { Head } from "@inertiajs/react";
 
-export default function View({ student, quiz_logs, questionAnswers, success }) {
+export default function View({ student, quiz_logs, questionAnswers = null, success }) {
 	return (
 		<AdminAuthLayout
 			header={
@@ -48,57 +48,60 @@ export default function View({ student, quiz_logs, questionAnswers, success }) {
 				<AdminStudentExamDetails examData={student} quizLogs={quiz_logs} exportQuestionPaper={questionAnswers} />
 			</div>
 
-			<div className="py-6">
-				<div className="mx-auto max-w-full sm:px-6 lg:px-8">
-					<div className="overflow-hidden bg-white shadow sm:rounded-lg border border-gray-300">
-						<div className="sm:px-6 py-3 px-4 bg-gray-50 font-medium border-b">
-							<p className="text-md leading-6 max-w-full mt-1 text-center">
-								Student Question Paper
-							</p>
-						</div>
-						<div className="p-4 lg:p-6">
-							<div className="grid grid-cols-2 gap-20">
-								{questionAnswers.categories.map((category, categoryIndex) => (
-									<div key={categoryIndex}>
-										<h3 className="my-3 font-semibold bg-indigo-700 text-white ps-3 py-2 rounded-sm">{category.category_name}</h3>
-										{category.questions.map((question, questionIndex) => (
-											<div key={questionIndex}>
-												<h4 className="mb-2 font-medium">{questionIndex + 1}. {question.question}</h4>
-												{/* Display "Not Attempted" if user_answer is null */}
-												{question.user_answer === null && (
-													<p className="text-gray-500 italic">Not Attempted</p>
-												)}
-												<ul className="mb-4 ms-4">
-													{["A", "B", "C", "D"].map((option) => {
-														// Determine the appropriate styling
-														let className = "";
-														if (question.correct_answer === option) {
-															className = "text-green-500 font-bold"; // Green for correct answer
-														}
-														if (
-															question.user_answer === option &&
-															question.user_answer !== question.correct_answer
-														) {
-															className = "text-red-500 font-bold"; // Red for incorrect user answer
-														}
+			{questionAnswers.categories && (
+				<div className="py-6">
+					<div className="mx-auto max-w-full sm:px-6 lg:px-8">
+						<div className="overflow-hidden bg-white shadow sm:rounded-lg border border-gray-300">
+							<div className="sm:px-6 py-3 px-4 bg-gray-50 font-medium border-b">
+								<p className="text-md leading-6 max-w-full mt-1 text-center">
+									Student Question Paper
+								</p>
+							</div>
+							<div className="p-4 lg:p-6">
+								<div className="grid grid-cols-2 gap-20">
+									{questionAnswers.categories.map((category, categoryIndex) => (
+										<div key={categoryIndex}>
+											<h3 className="my-3 font-semibold bg-indigo-700 text-white ps-3 py-2 rounded-sm">{category.category_name}</h3>
+											{category.questions.map((question, questionIndex) => (
+												<div key={questionIndex}>
+													<h4 className="mb-2 font-medium">{questionIndex + 1}. {question.question}</h4>
+													{/* Display "Not Attempted" if user_answer is null */}
+													{question.user_answer === null && (
+														<p className="text-gray-500 italic">Not Attempted</p>
+													)}
+													<ul className="mb-4 ms-4">
+														{["A", "B", "C", "D"].map((option) => {
+															// Determine the appropriate styling
+															let className = "";
+															if (question.correct_answer === option) {
+																className = "text-green-500 font-bold"; // Green for correct answer
+															}
+															if (
+																question.user_answer === option &&
+																question.user_answer !== question.correct_answer
+															) {
+																className = "text-red-500 font-bold"; // Red for incorrect user answer
+															}
 
-														return (
-															<li key={option} className={className}>
-																<strong>{option}:</strong> {question[option]}
-															</li>
-														);
-													})}
-												</ul>
+															return (
+																<li key={option} className={className}>
+																	<strong>{option}:</strong> {question[option]}
+																</li>
+															);
+														})}
+													</ul>
 
-											</div>
-										))}
-									</div>
-								))}
+												</div>
+											))}
+										</div>
+									))}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			)}
+
 		</AdminAuthLayout >
 	);
 }
