@@ -4,6 +4,16 @@ import PrimaryButton from "../PrimaryButton";
 export default function AdminStudentExamDetails({ examData, quizLogs, exportQuestionPaper }) {
 	const score = examData?.data?.score || {};
 	const quizData = quizLogs?.data || {};
+	console.log(quizData.exam_time);
+
+	const examDate = quizData.exam_time?.[0]?.exam_end
+		? new Date(quizData.exam_time[0].exam_end).toLocaleDateString("en-US", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+		})
+		: "N/A"
+
 
 	const handleExportQuePaper = (e) => {
 		e.preventDefault();
@@ -22,6 +32,14 @@ export default function AdminStudentExamDetails({ examData, quizLogs, exportQues
 						</div>
 						<div className="border-t border-gray-200 pb-4">
 							<dl>
+								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 hover:bg-green-50">
+									<dt className="text-gray-900 font-medium text-sm leading-5">
+										Exam Date:
+									</dt>
+									<dd className="sm:mt-0 col-span-2 text-gray-700 leading-6 mt-1 text-md">
+										{examDate}
+									</dd>
+								</div>
 								<div className="sm:px-6 sm:gap-4 grid grid-cols-3 py-2 px-4 hover:bg-green-50">
 									<dt className="text-gray-900 font-medium text-sm leading-5">
 										Marks Obtained:

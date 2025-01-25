@@ -2,7 +2,10 @@
 
 namespace App\Exports;
 
+use App\Models\QuizLog;
 use App\Models\Student;
+use Carbon\CarbonInterval;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -22,33 +25,12 @@ class adminStudentExport implements FromCollection, WithHeadings
 	 */
 	public function collection()
 	{
-		$students = Student::query();
+		$students = Student::with('quizLog');
 
-		if (empty($this->filters)) {
-			return $students->select(
-				'student_uuid',
-				'school_uuid',
-				'student_name',
-				'student_class',
-				'student_section',
-				'nflat_category',
-				'date_of_birth',
-				'gender',
-				'parent_name',
-				'parent_email_id',
-				'parent_mobile_number',
-				'password',
-				DB::raw('JSON_UNQUOTE(JSON_EXTRACT(score, "$.final_score")) as final_score'),
-				DB::raw('CASE
-                        WHEN exam_attempt = 1 THEN "Incomplete"
-                        WHEN exam_attempt = 2 THEN "Complete"
-                     END as status')
-			)->get();
-		} else {
-			if (isset($this->filters["school"])) {
-				$school_uuid = base64_decode(request("school"));
-				$students
-					->where("school_uuid", $school_uuid);
+		if (!empty($this->filters)) {
+			if (isset($this->filters['school'])) {
+				$school_uuid = base64_decode($this->filters['school']);
+				$students->where('school_uuid', $school_uuid);
 			}
 			if (isset($this->filters['category'])) {
 				$students->where('nflat_category', $this->filters['category']);
@@ -57,32 +39,59 @@ class adminStudentExport implements FromCollection, WithHeadings
 				$students->where('student_class', $this->filters['class']);
 			}
 			if (isset($this->filters['name'])) {
-				$students->where("student_name", "like", "%" . $this->filters["student_name"] . "%");
+				$students->where('student_name', 'like', '%' . $this->filters['name'] . '%');
 			}
 			if (isset($this->filters['attempt'])) {
-				$students->where('exam_attempt', request('attempt'));
+				$students->where('exam_attempt', $this->filters['attempt']);
+			}
+		}
+
+		$students = $students->get();
+
+		return $students->map(function ($student) {
+			// Calculate the total time spent from quiz logs
+			$totalTimeSpent = 0;
+			$examDate = null;
+
+			foreach ($student->quizLog as $log) {
+				if (isset($log->exam_time)) {
+					$examTime = json_decode($log->exam_time, true);
+
+					if ($examTime) {
+						foreach ($examTime as $timestamps) {
+							if (isset($timestamps['start_time'], $timestamps['exam_end'])) {
+								$startTime = Carbon::parse($timestamps['start_time']);
+								$examEnd = Carbon::parse($timestamps['exam_end']);
+								$totalTimeSpent += $startTime->diffInSeconds($examEnd);
+								// Set exam date if not already set
+								if (!$examDate) {
+									$examDate = $examEnd->toDateString();
+								}
+							}
+						}
+					}
+				}
 			}
 
-			return $students->select(
-				'student_uuid',
-				'school_uuid',
-				'student_name',
-				'student_class',
-				'student_section',
-				'nflat_category',
-				'date_of_birth',
-				'gender',
-				'parent_name',
-				'parent_email_id',
-				'parent_mobile_number',
-				'password',
-				DB::raw('JSON_UNQUOTE(JSON_EXTRACT(score, "$.final_score")) as final_score'),
-				DB::raw('CASE
-                        WHEN exam_attempt = 1 THEN "Incomplete"
-                        WHEN exam_attempt = 2 THEN "Complete"
-                     END as status')
-			)->get();
-		}
+			return [
+				'student_uuid' => $student->student_uuid,
+				'school_uuid' => $student->school_uuid,
+				'student_name' => $student->student_name,
+				'student_class' => $student->student_class,
+				'student_section' => $student->student_section,
+				'nflat_category' => $student->nflat_category,
+				'date_of_birth' => $student->date_of_birth,
+				'gender' => $student->gender,
+				'parent_name' => $student->parent_name,
+				'parent_email_id' => $student->parent_email_id,
+				'parent_mobile_number' => $student->parent_mobile_number,
+				'password' => $student->password,
+				'final_score' => json_decode($student->score, true)['final_score'] ?? null,
+				'status' => $student->exam_attempt == 1 ? 'Incomplete' : 'Complete',
+				'time_spent' => CarbonInterval::seconds($totalTimeSpent)->cascade()->format('%H:%I:%S'), // Format as H:M:S
+				'exam_date' => $examDate
+			];
+		});
 	}
 
 
@@ -103,7 +112,9 @@ class adminStudentExport implements FromCollection, WithHeadings
 			'Parent Mobile',
 			'Password',
 			'Score',
-			'Status'
+			'Status',
+			'Time Spent (H:M:S)',
+			'Exam Date',
 		];
 	}
 }

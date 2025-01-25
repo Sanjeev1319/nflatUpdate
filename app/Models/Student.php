@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\PasswordHelper;
+use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -79,5 +80,9 @@ class Student extends Authenticatable
 		return $this->belongsTo(School::class, 'school_uuid', 'school_uuid');
 	}
 
+	public function quizLog()
+	{
+		return $this->hasMany(QuizLog::class, 'student_uuid', 'student_uuid');
+	}
 
 }
