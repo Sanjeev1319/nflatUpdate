@@ -98,7 +98,7 @@ export default function Welcome({ auth, success }) {
 									Register your School
 								</Link>
 								<Link
-									// href={route("school.register")}
+									href={route("student.login")}
 									className="inline-flex items-center py-4 border border-transparent bg-orange-600 px-2 justify-center text-sm font-bold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-orange-500 focus:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 active:bg-orange-700 text-center items-center"
 								>
 									Click Here to Take Test
