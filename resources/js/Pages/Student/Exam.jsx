@@ -16,23 +16,23 @@ export default function Exam({
 	studentData
 }) {
 	useEffect(() => {
-        const handlePopState = (event) => {
-            // Prevent navigating back
-            window.history.pushState(null, null, window.location.href);
-        };
+		const handlePopState = (event) => {
+			// Prevent navigating back
+			window.history.pushState(null, null, window.location.href);
+		};
 
-        // Push the current state to history
-        window.history.pushState(null, null, window.location.href);
+		// Push the current state to history
+		window.history.pushState(null, null, window.location.href);
 
-        // Listen for back/forward navigation
-        window.addEventListener("popstate", handlePopState);
+		// Listen for back/forward navigation
+		window.addEventListener("popstate", handlePopState);
 
-        // Cleanup the event listener
-        return () => {
-            window.removeEventListener("popstate", handlePopState);
-        };
-    }, []);
-	
+		// Cleanup the event listener
+		return () => {
+			window.removeEventListener("popstate", handlePopState);
+		};
+	}, []);
+
 	// Form data using Inertia.js
 	const { data, setData, post, processing } = useForm({
 		answers: "",
@@ -201,13 +201,15 @@ export default function Exam({
 
 	// Final submission
 	const handleSubmit = () => {
-		post(route("student.quiz.submit"), {
-			data,
-			onSuccess: () => {
-				sessionStorage.removeItem("quiz_answers");
-				sessionStorage.removeItem("exam_start_time");
-			},
-		});
+		if (window.confirm("Are you sure you want to submit the quiz?")) {
+			post(route("student.quiz.submit"), {
+				data,
+				onSuccess: () => {
+					sessionStorage.removeItem("quiz_answers");
+					sessionStorage.removeItem("exam_start_time");
+				},
+			});
+		}
 	};
 
 	return (
@@ -254,43 +256,47 @@ export default function Exam({
 									)
 								))}
 							</div>
-							<div className="flex justify-start py-5">
-								<DangerButton
-									onClick={(e) => {
-										e.preventDefault();
-										handleClearAnswer(currentQuestion.id);
-									}}
-									className="bg-red-600 hover:bg-red-500 me-4"
-								>
-									Clear Answer
-								</DangerButton>
-								<PrimaryButton
-									onClick={handlePrevious}
-									disabled={
-										currentCategoryIndex === 0 &&
-										currentQuestionIndex === 0
-									}
-									className="me-5"
-								>
-									Previous
-								</PrimaryButton>
-								<PrimaryButton
-									onClick={handleNext}
-									disabled={
-										currentCategoryIndex === categories.length - 1 &&
-										currentQuestionIndex ===
-										currentCategory.questions.length - 1
-									}
-									className="me-5"
-								>
-									Next
-								</PrimaryButton>
-								<SuccessButton
-									onClick={handleSubmit}
-									className="bg-green-700 hover:bg-green-600 py-3 text-sm"
-								>
-									Submit
-								</SuccessButton>
+							<div className="flex justify-between py-5">
+								<div>
+									<DangerButton
+										onClick={(e) => {
+											e.preventDefault();
+											handleClearAnswer(currentQuestion.id);
+										}}
+										className="bg-red-600 hover:bg-red-500 me-4"
+									>
+										Clear Answer
+									</DangerButton>
+									<PrimaryButton
+										onClick={handlePrevious}
+										disabled={
+											currentCategoryIndex === 0 &&
+											currentQuestionIndex === 0
+										}
+										className="me-5"
+									>
+										Previous
+									</PrimaryButton>
+									<PrimaryButton
+										onClick={handleNext}
+										disabled={
+											currentCategoryIndex === categories.length - 1 &&
+											currentQuestionIndex ===
+											currentCategory.questions.length - 1
+										}
+										className="me-5"
+									>
+										Next
+									</PrimaryButton>
+								</div>
+								<div>
+									<SuccessButton
+										onClick={handleSubmit}
+										className="bg-green-700 hover:bg-green-600 text-xs"
+									>
+										Submit
+									</SuccessButton>
+								</div>
 							</div>
 						</div>
 					</div>

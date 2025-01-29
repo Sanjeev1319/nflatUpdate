@@ -137,6 +137,97 @@ export default function Dashboard({ success, links, studentCount }) {
 							</dl>
 						</div>
 					</div>
+
+					<div className="lg:grid-cols-4 gap-6 grid grid-cols-1 overflow-hidden my-6">
+						<dl className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+							<div>
+								<div className="lg:p-6 p-4">
+									<dt className="text-gray-900 font-normal text-base leading-6">
+										Total Students Attempted
+									</dt>
+									<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
+										<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
+											{studentCount.totalAttemptStudent}
+										</div>
+									</dd>
+								</div>
+								<div className="bg-indigo-100 px-4 lg:px-6 py-2">
+									<Link
+										href={route("school.studentList", { attempt: "2" })}
+										className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
+									>
+										View All
+									</Link>
+								</div>
+							</div>
+						</dl>
+						<div className="overflow-hidden bg-white shadow-sm sm:rounded-lg lg:col-span-3">
+							<dl className="lg:grid-cols-3 grid grid-cols-1 overflow-hidden">
+								<div>
+									<div className="lg:p-6 p-4">
+										<dt className="text-gray-900 font-normal text-base leading-6">
+											Junior Students
+										</dt>
+										<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
+											<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
+												{studentCount.jrAttemptStudent}
+											</div>
+										</dd>
+									</div>
+									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
+										<Link
+											href={route("school.studentList", { category: "Junior", attempt: "2" })}
+											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
+										>
+											View All
+										</Link>
+									</div>
+								</div>
+								<div className="border-gray-300 border-x">
+									<div className="lg:p-6 p-4 pt-5 pb-5 pl-4 pr-4">
+										<dt className="text-gray-900 font-normal text-base leading-6">
+											Intermediate Students
+										</dt>
+										<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
+											<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
+												{studentCount.midAttemptStudent}
+											</div>
+										</dd>
+									</div>
+									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
+										<Link
+											href={route("school.studentList", {
+												category: "Intermediate", attempt: "2"
+											})}
+											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
+										>
+											View All
+										</Link>
+									</div>
+								</div>
+								<div>
+									<div className="lg:p-6 p-4 pt-5 pb-5 pl-4 pr-4">
+										<dt className="text-gray-900 font-normal text-base leading-6">
+											Senior Students
+										</dt>
+										<dd className="lg:flex md:block flex justify-between items-baseline mt-1">
+											<div className="text-indigo-600 font-semibold text-2xl leading-8 flex items-baseline">
+												{studentCount.srAttemptStudent}
+											</div>
+										</dd>
+									</div>
+									<div className="bg-indigo-100 px-4 lg:px-6 py-2">
+										<Link
+											href={route("school.studentList", { category: "Senior", attempt: "2" })}
+											className="flex gap-3 items-center justify-center text-indigo-800 font-medium hover:font-semibold"
+										>
+											View All
+										</Link>
+									</div>
+								</div>
+							</dl>
+						</div>
+					</div>
 				</div>
 			</div>
 		</AuthenticatedLayout>

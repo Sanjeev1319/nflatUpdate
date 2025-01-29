@@ -19,6 +19,7 @@ export default function StudentList({
 	const [category, setCategory] = useState(queryParams.category || "");
 	const [classLevel, setClassLevel] = useState(queryParams.class || "");
 	const [name, setName] = useState(queryParams.name || "");
+	const [attempt, setAttempt] = useState(queryParams.attempt || "");
 
 	const searchFieldChanged = (name, value) => {
 		if (value) {
@@ -42,6 +43,7 @@ export default function StudentList({
 		if (category) params.append("category", category);
 		if (classLevel) params.append("class", classLevel);
 		if (name) params.append("name", name);
+		if (attempt) params.append("attempt", attempt);
 
 		// Construct the full URL with query parameters
 		return `${route("school.studentExport")}?${params.toString()}`;
@@ -55,6 +57,8 @@ export default function StudentList({
 			setClassLevel(value);
 		} else if (filterName === "name") {
 			setName(value);
+		} else if (filterName === "attempt") {
+			setAttempt(value);
 		}
 	};
 
@@ -133,6 +137,17 @@ export default function StudentList({
 									<option value={"Junior"}>Junior</option>
 									<option value={"Intermediate"}>Intermediate</option>
 									<option value={"Senior"}>Senior</option>
+								</SelectInput>
+								<SelectInput
+									onChange={(e) => [
+										searchFieldChanged("attempt", e.target.value),
+										handleFilterChange("attempt", e.target.value),
+									]}
+									defaultValue={queryParams.attempt}
+								>
+									<option value={""}>Student Attempts</option>
+									<option value={"2"}>Attempted</option>
+									<option value={"null"}>Not Attempted</option>
 								</SelectInput>
 								<div className="flex gap-3 justify-between">
 									<Link

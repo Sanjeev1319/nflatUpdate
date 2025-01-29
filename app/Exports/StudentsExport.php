@@ -51,8 +51,15 @@ class StudentsExport implements FromCollection, WithHeadings
 			if (isset($this->filters['name'])) {
 				$students->where("student_name", "like", "%" . $this->filters["student_name"] . "%");
 			}
+			if (isset($this->filters['attempt'])) {
+				if ($this->filters['attempt'] === 'null') {
+					$students->whereNull('exam_attempt');
+				} else {
+					$students->where("exam_attempt", $this->filters['attempt']);
+				}
+			}
 
-			return $students->select(
+			return $students->where('school_uuid', $school_uuid)->select(
 				'student_uuid',
 				'school_uuid',
 				'student_name',

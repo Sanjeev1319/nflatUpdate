@@ -27,16 +27,46 @@ class SchoolDashboardController extends Controller
 	public function index()
 	{
 		$school_uuid = auth('school')->user()->school_uuid;
-		$totalStudent = Student::where('school_uuid', $school_uuid)->count();
-		$jrStudent = Student::where('school_uuid', $school_uuid)->where('nflat_category', 'Junior')->count();
-		$midStudent = Student::where('school_uuid', $school_uuid)->where('nflat_category', 'Intermediate')->count();
-		$srStudent = Student::where('school_uuid', $school_uuid)->where('nflat_category', 'Senior')->count();
+
+		$totalStudent = Student::where('school_uuid', $school_uuid)
+			->count();
+		$totalAttemptStudent = Student::where('school_uuid', $school_uuid)
+			->where('exam_attempt', 2)
+			->count();
+
+		$jrStudent = Student::where('school_uuid', $school_uuid)
+			->where('nflat_category', 'Junior')
+			->count();
+		$jrAttemptStudent = Student::where('school_uuid', $school_uuid)
+			->where('nflat_category', 'Junior')
+			->where('exam_attempt', 2)
+			->count();
+
+		$midStudent = Student::where('school_uuid', $school_uuid)
+			->where('nflat_category', 'Intermediate')
+			->count();
+		$midAttemptStudent = Student::where('school_uuid', $school_uuid)
+			->where('nflat_category', 'Intermediate')
+			->where('exam_attempt', 2)
+			->count();
+
+		$srStudent = Student::where('school_uuid', $school_uuid)
+			->where('nflat_category', 'Senior')
+			->count();
+		$srAttemptStudent = Student::where('school_uuid', $school_uuid)
+			->where('nflat_category', 'Senior')
+			->where('exam_attempt', 2)
+			->count();
 
 		$studentCount = [
 			'totalStudent' => $totalStudent,
+			'totalAttemptStudent' => $totalAttemptStudent,
 			'jrStudent' => $jrStudent,
+			'jrAttemptStudent' => $jrAttemptStudent,
 			'midStudent' => $midStudent,
+			'midAttemptStudent' => $midAttemptStudent,
 			'srStudent' => $srStudent,
+			'srAttemptStudent' => $srAttemptStudent,
 		];
 
 		return Inertia::render('School/Dashboard', [
@@ -197,6 +227,15 @@ class SchoolDashboardController extends Controller
 		if (request('category')) {
 			$students_query
 				->where('nflat_category', request('category'));
+		}
+		if (request('attempt')) {
+			if (request('attempt') === 'null') {
+				$students_query->whereNull('exam_attempt');
+			} else {
+				$students_query
+					->where('exam_attempt', request('attempt'));
+			}
+
 		}
 
 		$students = $students_query->where('school_uuid', $school_uuid)->paginate(20)
